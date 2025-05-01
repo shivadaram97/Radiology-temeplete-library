@@ -1,0 +1,4152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Radiology Templates</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+  .compare-btn {
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  border: none;
+  color: white;
+  background-color: #3498db;
+}
+  /* Add to your existing CSS */
+.compare-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 2000;
+  overflow: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.compare-content {
+  background-color: white;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 800px;
+  position: relative;
+}
+
+.close-compare {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.compare-container {
+  display: flex;
+  gap: 20px;
+}
+
+.compare-original, .compare-edited {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+  
+  /* Add to your existing CSS */
+.template-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.edit-btn, .save-btn, .reset-btn {
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  border: none;
+  color: white;
+}
+
+.edit-btn { background-color: #f39c12; }
+.save-btn { background-color: #2ecc71; }
+.reset-btn { background-color: #e74c3c; }
+
+.hidden { display: none; }
+
+.edit-mode .template-content {
+  border: 2px dashed #3498db;
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+.edit-mode .template-content[contenteditable="true"] {
+  outline: none;
+  min-height: 200px;
+}
+  
+  /* Button container styles */
+.button-container {
+  max-width: 550px;
+  margin: 0 auto 20px auto;
+  display: flex;
+  gap: 10px;
+}
+
+.control-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #3498db;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.control-btn:hover {
+  background-color: #2980b9;
+}
+
+.control-btn i {
+  font-size: 12px;
+}
+  
+  /* Search bar styles */
+.search-container {
+  max-width: 550px;
+  margin: 0 auto 30px auto;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  outline: none;
+  transition: box-shadow 0.3s ease;
+}
+
+#searchInput:focus {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+/* Search functionality classes */
+.hidden {
+  display: none;
+}
+
+.highlight {
+  background-color: #fff59d;
+}
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fdfbfb, #ebedee);
+      padding: 30px 15px;
+      margin: 0;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 40px;
+      font-size: 26px;
+    }
+
+    .dropdown {
+      max-width: 550px;
+      margin: 20px auto;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .dropdown:hover {
+      transform: translateY(-2px);
+    }
+
+    summary {
+      padding: 18px 22px;
+      color: white;
+      font-size: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dropdown ul, .dropdown details {
+      background: #f8f8f8;
+      padding: 10px 25px;
+      margin: 0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .dropdown ul li, .dropdown details summary.sub {
+      padding: 10px;
+      margin: 6px 0;
+      background-color: #e3f2fd;
+      border-radius: 8px;
+      color: #2c3e50;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .dropdown ul li:hover {
+      background-color: #bbdefb;
+    }
+
+    .dropdown details summary.sub {
+      background-color: #c8e6c9;
+      font-size: 17px;
+    }
+
+    .dropdown details[open] > summary.sub {
+      font-weight: bold;
+    }
+
+    .dropdown ul ul {
+      margin-top: 5px;
+      padding-left: 20px;
+    }
+
+    .xray summary { background: #3498db; }
+    .usg summary { background: #1abc9c; }
+    .doppler summary { background: #9b59b6; }
+    .obg summary { background: #e67e22; }
+    .ct summary { background: #e74c3c; }
+    .mri summary { background: #34495e; }
+
+    summary i {
+      min-width: 20px;
+    }
+
+    @media (max-width: 600px) {
+      summary {
+        font-size: 18px;
+      }
+      ul li {
+        font-size: 15px;
+      }
+    }
+  /* TEMPLATE STYLES */
+.template-container {
+  display: none;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 10px;
+  border-left: 4px solid #3498db;
+  position: relative;
+}
+
+.template-content {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  font-family: 'Segoe UI', sans-serif;
+  margin-bottom: 10px;
+}
+
+.template-content ul {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-left: 20px;
+}
+
+.template-content li {
+  margin-bottom: 3px;
+}
+
+.copy-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  float: right;
+}
+
+.copy-btn:hover {
+  background-color: #2980b9;
+}
+
+.copy-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #2ecc71;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 4px;
+  display: none;
+  z-index: 1000;
+}</style>
+  <script>
+    // Allow only one open sub-section at a time within X-ray
+    document.addEventListener("DOMContentLoaded", () => {
+      const xraySections = document.querySelectorAll(".xray details > details");
+
+      xraySections.forEach((section) => {
+        section.addEventListener("toggle", () => {
+          if (section.open) {
+            xraySections.forEach((other) => {
+              if (other !== section) other.removeAttribute("open");
+            });
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <h2>Radiology Template Library</h2>
+
+<!-- Add this search bar -->
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Search templates...">
+</div>
+
+<!-- Add these collapse/expand buttons -->
+<div class="button-container">
+  <button id="expandAllBtn" class="control-btn">
+    <i class="fas fa-expand"></i> Expand All
+  </button>
+  <button id="collapseAllBtn" class="control-btn">
+    <i class="fas fa-compress"></i> Collapse All
+  </button>
+</div>
+
+  <!-- X-Ray Section -->
+  <details class="dropdown xray">
+    <summary><i class="fas fa-x-ray"></i>X-Ray</summary>
+    <ul>
+      <details>
+        <summary class="sub">Chest X-ray</summary>
+        <ul>
+<li onclick="toggleTemplate('chest-pa')">PA View</li>
+<div id="chest-pa" class="template-container">
+  <div class="template-content">
+    <div><strong>CHEST X-RAY (PA VIEW)</strong></div><br>
+    <div><strong>INDICATION:</strong> [State clinical indication]</div><br>
+    <div><strong>TECHNIQUE:</strong> Single frontal PA view obtained at full inspiration</div><br>
+    <div><strong>COMPARISON:</strong> [None/Previous study from DATE]</div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><strong>Lungs:</strong>
+        <ul>
+          <li>Clear lung fields with no focal consolidation</li>
+          <li>Normal pulmonary vascular markings</li>
+          <li>No evidence of pulmonary edema or effusion</li>
+          <li>Normal hilar structures</li>
+        </ul>
+      </li>
+      <li><strong>Cardiomediastinum:</strong>
+        <ul>
+          <li>Normal cardiac silhouette (CTR &lt; 50%)</li>
+          <li>Unremarkable mediastinal contours</li>
+          <li>Normal aortic arch</li>
+        </ul>
+      </li>
+      <li><strong>Pleura:</strong>
+        <ul>
+          <li>No pneumothorax identified</li>
+          <li>No pleural thickening or calcification</li>
+        </ul>
+      </li>
+      <li><strong>Bones and soft tissues:</strong>
+        <ul>
+          <li>No fractures or destructive bony lesions</li>
+          <li>Normal alignment of ribs and spine</li>
+          <li>Unremarkable soft tissues</li>
+        </ul>
+      </li>
+      <li><strong>Other:</strong>
+        <ul>
+          <li>Normal diaphragmatic contours</li>
+          <li>No abnormal calcifications</li>
+          <li>No suspicious masses or nodules</li>
+        </ul>
+      </li>
+    </ul>
+    <br>
+    <div><strong>IMPRESSION:</strong></div>
+    <ul>
+      <li>Normal PA chest radiograph</li>
+      <li>No acute cardiopulmonary abnormality</li>
+    </ul>
+    <br>
+    <div>[Your Name], MD</div>
+    <div>Radiology Department</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('chest-pa')">
+    <i class="fas fa-copy"></i> Copy Template
+  </button>
+  <div style="clear: both;"></div>
+</div>          <li onclick="toggleTemplate('chest-lateral')">Lateral View</li>
+<div id="chest-lateral" class="template-container">
+  <div class="template-content">
+    <div><strong>CHEST X-RAY (LATERAL VIEW)</strong></div><br>
+    <div><strong>INDICATION:</strong> [State clinical indication]</div><br>
+    <div><strong>TECHNIQUE:</strong> Left lateral decubitus view obtained at full inspiration</div><br>
+    <div><strong>COMPARISON:</strong> [None/PA view from same date]</div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><strong>Lungs:</strong>
+        <ul>
+          <li>Clear retrosternal and retrocardiac airspaces</li>
+          <li>Normal pulmonary vasculature</li>
+          <li>No evidence of airspace disease</li>
+          <li>Normal hilar structures</li>
+        </ul>
+      </li>
+      <li><strong>Cardiomediastinum:</strong>
+        <ul>
+          <li>Normal cardiac silhouette</li>
+          <li>Clear posterior costophrenic angles</li>
+          <li>Normal aorticopulmonary window</li>
+        </ul>
+      </li>
+      <li><strong>Pleura:</strong>
+        <ul>
+          <li>No pleural effusion (posterior gutters clear)</li>
+          <li>No pleural thickening</li>
+        </ul>
+      </li>
+      <li><strong>Bones and soft tissues:</strong>
+        <ul>
+          <li>Normal thoracic spine alignment</li>
+          <li>No rib fractures</li>
+          <li>Normal sternum</li>
+        </ul>
+      </li>
+      <li><strong>Diaphragm:</strong>
+        <ul>
+          <li>Normal domes</li>
+          <li>Clear costophrenic and cardiophrenic angles</li>
+        </ul>
+      </li>
+    </ul>
+    <br>
+    <div><strong>IMPRESSION:</strong></div>
+    <ul>
+      <li>Normal lateral chest radiograph</li>
+      <li>No evidence of infiltrate, effusion, or pneumothorax</li>
+    </ul>
+    <br>
+    <div>[Your Name], MD</div>
+    <div>Radiology Department</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('chest-lateral')">
+    <i class="fas fa-copy"></i> Copy Template
+  </button>
+  <div style="clear: both;"></div>
+</div>
+        </ul>
+      </details>
+
+      <details>
+        <summary class="sub">Abdomen</summary>
+        <ul>
+          <li onclick="toggleTemplate('abdomen-supine')">Supine</li>
+<div id="abdomen-supine" class="template-container">
+  <div class="template-content">
+    <div><strong>ABDOMEN X-RAY (SUPINE)</strong></div><br>
+    <div><strong>INDICATION:</strong> [Abdominal pain/distension/vomiting]</div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><strong>Bowel gas pattern:</strong>
+        <ul>
+          <li>Normal distribution of gas in stomach, small and large bowel</li>
+          <li>No evidence of obstruction or ileus</li>
+          <li>No abnormal dilatation (>3cm small bowel, >6cm colon)</li>
+        </ul>
+      </li>
+      <li><strong>Pneumoperitoneum:</strong>
+        <ul>
+          <li>No free subdiaphragmatic air</li>
+          <li>No Rigler's sign or football sign</li>
+        </ul>
+      </li>
+      <li><strong>Calcifications:</strong>
+        <ul>
+          <li>No radio-opaque calculi</li>
+          <li>No abnormal vascular calcifications</li>
+        </ul>
+      </li>
+      <li><strong>Solid organs:</strong>
+        <ul>
+          <li>Liver and spleen shadows normal</li>
+          <li>No masses or abnormal densities</li>
+        </ul>
+      </li>
+      <li><strong>Bones:</strong>
+        <ul>
+          <li>No fractures or lytic lesions</li>
+          <li>Normal lumbar spine alignment</li>
+        </ul>
+      </li>
+    </ul>
+    <br>
+    <div><strong>IMPRESSION:</strong></div>
+    <ul>
+      <li>Normal supine abdomen radiograph</li>
+      <li>No evidence of obstruction or perforation</li>
+    </ul>
+    <br>
+    <div>[Your Name], MD</div>
+    <div>Radiology Department</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('abdomen-supine')">
+    <i class="fas fa-copy"></i> Copy Template
+  </button>
+  <div style="clear: both;"></div>
+</div>
+          <li onclick="toggleTemplate('abdomen-erect')">Erect</li>
+<div id="abdomen-erect" class="template-container">
+  <div class="template-content">
+    <div><strong>ABDOMEN X-RAY (ERECT)</strong></div><br>
+    <div><strong>INDICATION:</strong> [Suspected obstruction/perforation]</div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><strong>Bowel gas:</strong>
+        <ul>
+          <li>Normal air-fluid levels (≤3 in small bowel)</li>
+          <li>No evidence of obstruction</li>
+          <li>Colonic haustra preserved</li>
+        </ul>
+      </li>
+      <li><strong>Pneumoperitoneum:</strong>
+        <ul>
+          <li>No subdiaphragmatic free air</li>
+          <li>No cupola sign</li>
+        </ul>
+      </li>
+      <li><strong>Other findings:</strong>
+        <ul>
+          <li>No evidence of volvulus</li>
+          <li>No thumbprinting or mucosal edema</li>
+        </ul>
+      </li>
+    </ul>
+    <br>
+    <div><strong>IMPRESSION:</strong></div>
+    <ul>
+      <li>Normal erect abdomen radiograph</li>
+      <li>No evidence of perforation or high-grade obstruction</li>
+    </ul>
+    <br>
+    <div>[Your Name], MD</div>
+    <div>Radiology Department</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('abdomen-erect')">
+    <i class="fas fa-copy"></i> Copy Template
+  </button>
+  <div style="clear: both;"></div>
+</div>
+         <li onclick="toggleTemplate('abdomen-kub')">KUB</li>
+<div id="abdomen-kub" class="template-container">
+  <div class="template-content">
+    <div><strong>KUB RADIOGRAPH</strong></div><br>
+    <div><strong>INDICATION:</strong> [Renal colic/hematuria/stent check]</div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><strong>Renal shadows:</strong>
+        <ul>
+          <li>Both kidneys normal in size and position</li>
+          <li>No radiopaque calculi</li>
+        </ul>
+      </li>
+      <li><strong>Ureters:</strong>
+        <ul>
+          <li>No visible ureteric calculi along expected course</li>
+        </ul>
+      </li>
+      <li><strong>Bladder:</strong>
+        <ul>
+          <li>Normal contour</li>
+          <li>No calculi or abnormal calcifications</li>
+        </ul>
+      </li>
+      <li><strong>Other:</strong>
+        <ul>
+          <li>No abnormal pelvic calcifications</li>
+          <li>Visualized bowel gas pattern normal</li>
+          <li>No bony abnormalities</li>
+        </ul>
+      </li>
+    </ul>
+    <br>
+    <div><strong>IMPRESSION:</strong></div>
+    <ul>
+      <li>Normal KUB radiograph</li>
+      <li>No radio-opaque urinary tract calculi</li>
+    </ul>
+    <br>
+    <div>[Your Name], MD</div>
+    <div>Radiology Department</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('abdomen-kub')">
+    <i class="fas fa-copy"></i> Copy Template
+  </button>
+  <div style="clear: both;"></div>
+</div>
+        </ul>
+      </details>
+
+      <details>
+        <summary class="sub">Extremities</summary>
+        <ul>
+<li onclick="toggleTemplate('shoulder-xray')">Shoulder</li>
+<div id="shoulder-xray" class="template-container">
+  <div class="template-content">
+    <div><strong>SHOULDER X-RAY</strong></div>
+    <div><em>Views: AP, Grashey, Y-view</em></div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Bones:</u> No fracture. Humeral head is congruent with glenoid.</li>
+      <li><u>Joints:</u> Normal glenohumeral and AC joint alignment.</li>
+      <li><u>Soft tissues:</u> No effusion or calcific tendinosis.</li>
+    </ul>
+    <div><strong>IMPRESSION:</strong> No acute osseous abnormality.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('shoulder-xray')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<li onclick="toggleTemplate('extremity-elbow')">Elbow</li>
+<div id="extremity-elbow" class="template-container">
+  <div class="template-content">
+    <div><strong>ELBOW X-RAY (AP/LATERAL)</strong></div><br>
+    <div><strong>INDICATION:</strong> [Trauma/pain]</div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li>No fracture or joint effusion</li>
+      <li>Normal anterior humeral line</li>
+      <li>Preserved radiocapitellar alignment</li>
+    </ul>
+    <br>
+    <div><strong>IMPRESSION:</strong></div>
+    <ul>
+      <li>Normal elbow radiograph</li>
+    </ul>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('extremity-elbow')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<li onclick="toggleTemplate('extremity-wrist')">Wrist</li>
+<div id="extremity-wrist" class="template-container">
+  <div class="template-content">
+    <div><strong>WRIST X-RAY (PA/LATERAL/OBLIQUE)</strong></div><br>
+    <div><strong>INDICATION:</strong> [Trauma/pain]</div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li>No fracture or dislocation</li>
+      <li>Normal carpal alignment</li>
+      <li>Preserved joint spaces</li>
+    </ul>
+    <br>
+    <div><strong>IMPRESSION:</strong></div>
+    <ul>
+      <li>Normal wrist radiograph</li>
+    </ul>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('extremity-wrist')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<li onclick="toggleTemplate('hand-xray')">Hand</li>
+<div id="hand-xray" class="template-container">
+  <div class="template-content">
+    <div><strong>HAND X-RAY</strong></div>
+    <div><em>Views: PA, Oblique, Lateral</em></div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Bones:</u> 
+        <ul>
+          <li>No fracture of metacarpals or phalanges</li>
+          <li>Normal cortical outlines and trabecular patterns</li>
+        </ul>
+      </li>
+      <li><u>Joints:</u>
+        <ul>
+          <li>Preserved MCP/PIP/DIP joint spaces</li>
+          <li>No dislocation or malalignment</li>
+        </ul>
+      </li>
+      <li><u>Soft tissues:</u>
+        <ul>
+          <li>No foreign bodies or calcifications</li>
+          <li>Normal soft tissue planes</li>
+        </ul>
+      </li>
+    </ul>
+    <div><strong>IMPRESSION:</strong> Normal hand radiographs.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('hand-xray')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<li onclick="toggleTemplate('hip-xray')">Hip</li>
+<div id="hip-xray" class="template-container">
+  <div class="template-content">
+    <div><strong>HIP X-RAY</strong></div>
+    <div><em>Views: AP Pelvis, Lateral (Frog-leg/Judet as clinically indicated)</em></div><br>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Alignment:</u>
+        <ul>
+          <li>Normal femoral head-acetabular congruence</li>
+          <li>Shenton's line intact bilaterally</li>
+        </ul>
+      </li>
+      
+      <li><u>Bones:</u>
+        <ul>
+          <li>No fracture of femoral neck/intertrochanteric region</li>
+          <li>No lytic/blastic lesions</li>
+          <li>Preserved joint space (≥4mm superiorly)</li>
+        </ul>
+      </li>
+      
+      <li><u>Soft tissues:</u>
+        <ul>
+          <li>No effusion or periarticular calcifications</li>
+          <li>Normal gluteal/iliopsoas fat planes</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong> No acute osseous abnormality.</div>
+  </div>
+  
+  <button class="copy-btn" onclick="copyToClipboard('hip-xray')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<li onclick="toggleTemplate('knee-xray')">Knee</li>
+<div id="knee-xray" class="template-container">
+  <div class="template-content">
+    <div><strong>KNEE X-RAY</strong></div>
+    <div><em>Views: AP, Lateral, Merchant</em></div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Alignment:</u> Normal tibiofemoral and patellofemoral relationships.</li>
+      <li><u>Bones:</u> No fracture or osteolytic lesion.</li>
+      <li><u>Joint space:</u> Preserved throughout all compartments.</li>
+    </ul>
+    <div><strong>IMPRESSION:</strong> Normal knee radiographs.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('knee-xray')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<li onclick="toggleTemplate('ankle-xray')">Ankle</li>
+<div id="ankle-xray" class="template-container">
+  <div class="template-content">
+    <div><strong>ANKLE X-RAY</strong></div>
+    <div><em>Views: AP, Lateral, Mortise</em></div><br>
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Alignment:</u> Normal tibiotalar joint (medial clear space <4mm).</li>
+      <li><u>Bones:</u> No fracture of malleoli, talus, or 5th metatarsal base.</li>
+      <li><u>Soft tissues:</u> No effusion or foreign body.</li>
+    </ul>
+    <div><strong>IMPRESSION:</strong> No acute traumatic findings.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ankle-xray')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<li onclick="toggleTemplate('foot-xray')">Foot</li>
+<div id="foot-xray" class="template-container">
+  <div class="template-content">
+    <div><strong>FOOT X-RAY</strong></div>
+    <div><em>Views: AP, Oblique, Lateral</em></div><br>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Forefoot:</u>
+        <ul>
+          <li>No fracture of metatarsals or phalanges</li>
+          <li>Normal MTP/IP joint alignment</li>
+        </ul>
+      </li>
+      
+      <li><u>Midfoot:</u>
+        <ul>
+          <li>Maintained Lisfranc interval (<2mm)</li>
+          <li>No navicular or cuneiform fractures</li>
+        </ul>
+      </li>
+      
+      <li><u>Hindfoot:</u>
+        <ul>
+          <li>Normal talocalcaneal alignment</li>
+          <li>No calcaneal fracture (Böhler's angle >25°)</li>
+        </ul>
+      </li>
+      
+      <li><u>Soft tissues:</u>
+        <ul>
+          <li>No foreign bodies or gas shadows</li>
+          <li>Normal fat pads</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong> No acute osseous abnormality.</div>
+  </div>
+  
+  <button class="copy-btn" onclick="copyToClipboard('foot-xray')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>        </ul>
+      </details>
+
+      <details>
+        <summary class="sub">Skull & Facial Bones</summary>
+        <ul>
+ <li onclick="toggleTemplate('skull-xray')">Skull & Facial Bones (AP/Lateral)</li>
+<div id="skull-xray" class="template-container">
+  <div class="template-content">
+    <div><strong>SKULL/FACIAL BONES X-RAY</strong></div>
+    <div><em>Views: AP, Lateral</em></div><br>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Calvarium:</u>
+        <ul>
+          <li>No fractures or lytic lesions</li>
+          <li>Normal diploic space</li>
+        </ul>
+      </li>
+      
+      <li><u>Facial bones:</u>
+        <ul>
+          <li>Intact orbital floors and zygomatic arches</li>
+          <li>No naso-orbital-ethmoid (NOE) complex fracture</li>
+        </ul>
+      </li>
+      
+      <li><u>Sinus aeration:</u>
+        <ul>
+          <li>Frontal and maxillary sinuses are clear</li>
+        </ul>
+      </li>
+      
+      <li><u>Alignment:</u>
+        <ul>
+          <li>Normal cranial sutures (no diastasis)</li>
+          <li>Normal atlanto-occipital alignment</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong> No acute fracture or destructive lesion.</div>
+  </div>
+  
+  <button class="copy-btn" onclick="copyToClipboard('skull-xray')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>       </ul>
+      </details>
+
+      <details>
+        <summary class="sub">PNS</summary>
+        <ul>   
+<li onclick="toggleTemplate('pns-xray')">PNS (Water's/Caldwell's)</li>
+<div id="pns-xray" class="template-container">
+  <div class="template-content">
+    <div><strong>PARANASAL SINUS X-RAY</strong></div>
+    <div><em>Views: Water's, Caldwell's</em></div><br>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Sinuses:</u>
+        <ul>
+          <li>Maxillary sinuses: Fully aerated, no air-fluid levels</li>
+          <li>Frontal sinuses: Well-developed and clear</li>
+          <li>Ethmoid air cells: Normal aeration</li>
+        </ul>
+      </li>
+      
+      <li><u>Bony structures:</u>
+        <ul>
+          <li>Intact orbital floors and medial walls</li>
+          <li>No evidence of osteomeatal complex obstruction</li>
+        </ul>
+      </li>
+      
+      <li><u>Soft tissues:</u>
+        <ul>
+          <li>Normal nasal turbinates</li>
+          <li>No polypoid mucosal thickening</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong> Normal paranasal sinus radiographs.</div>
+  </div>
+  
+  <button class="copy-btn" onclick="copyToClipboard('pns-xray')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>        </ul>
+      </details>
+    </ul>
+  </details>
+
+  <!-- Ultrasound Section -->
+  <details class="dropdown usg">
+    <summary><i class="fas fa-heartbeat"></i>Ultrasound</summary>
+    <ul>
+   <!-- ABDOMEN & PELVIS USG -->
+<li onclick="toggleTemplate('usg-abdopelvis')">Abdomen and Pelvis</li>
+<div id="usg-abdopelvis" class="template-container">
+  <div class="template-content">
+    <div><strong>ABDOMEN & PELVIS ULTRASOUND</strong></div><br>
+    <div><strong>INDICATION:</strong> [Abdominal pain/Routine screening]</div><br>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Liver:</u> Normal size, echotexture. No focal lesions.Normal CBD and portal vein.</li>
+      <li><u>Gallbladder:</u> Physioloically distended with no wall thickness , no stones/sludge.</li>
+      <li><u>Pancreas:</u> head and proximal body visualized,appears normal.Distal body and tail obscured by bowel gas shadows .no duct dilation.</li>
+      <li><u>Spleen:</u> Normal size (m/s ), homogeneous echotexture.</li>
+       <li><u>Left Kidney:</u> Normal size (m/s) . Normal corticomedullary differentiation. No hydronephrosis.</li>
+      
+      <li><u>Prostate:</u> Normal size for age.(m/s  vol )</li>
+       <li><u>Uterus:</u>Normal size (m/s ) Anteverted, normal endometrial stripe (m/s).</li>
+      <li><u>Ovaries:</u> Normal size , shape , echotexture.
+      Right ovary m/s ( vol: )
+      left ovary m/s (vol : )</li>
+<li><u>Bladder:</u>Distended .Normal wall thickness, no masses.</li>
+      
+      <li><u>Vessels:</u> Normal Doppler flow in aorta/IVC.</li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong> Normal abdominal and pelvic ultrasound.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('usg-abdopelvis')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- PELVIS USG -->
+<li onclick="toggleTemplate('usg-pelvis')">Pelvis</li>
+<div id="usg-pelvis" class="template-container">
+  <div class="template-content">
+    <div><strong>PELVIC ULTRASOUND</strong></div><br>
+    <div><strong>INDICATION:</strong> [Pelvic pain/Menstrual irregularities]</div><br>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Uterus:</u>Normal size (m/s ) Anteverted, normal endometrial stripe (m/s).</li>
+      <li><u>Ovaries:</u> Normal size , shape , echotexture.
+      Right ovary m/s ( vol: )
+      left ovary m/s (vol : )</li>
+      <li><u>Bladder:</u> Normally distended.Nomral wall thickness.</li>
+      <li><u>Free fluid:</u> No free fluid in pouch of Douglas.</li>
+      
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong> Normal pelvic ultrasound.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('usg-pelvis')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- NECK USG -->
+<li onclick="toggleTemplate('usg-neck')">Neck</li>
+<div id="usg-neck" class="template-container">
+  <div class="template-content">
+    <div><strong>NECK ULTRASOUND</strong></div><br>
+    <div><strong>INDICATION:</strong> [Lump/Thyroid evaluation]</div><br>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Thyroid:</u>
+      Right lobe m/s (vol )
+      Left lobe m/s (vol)
+      isthmus m/s 
+      Homogeneous echotexture, no focal lesions. .</li>
+      <li><u>Lymph nodes:</u> Normal morphology (hilum present, cortex &lt;3mm).</li>
+      <li><u>Salivary glands:</u> Parotids/submandibular glands normal.</li>
+      <li><u>Vessels:</u> Normal carotid/vertebral artery Doppler waveforms.</li>
+      <li><u>Other:</u> No cystic/calcified lesions.</li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong> Normal neck ultrasound.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('usg-neck')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- CHEST USG -->
+<li onclick="toggleTemplate('usg-chest')">Chest</li>
+<div id="usg-chest" class="template-container">
+  <div class="template-content">
+    <div><strong>CHEST ULTRASOUND</strong></div><br>
+    <div><strong>INDICATION:</strong> [Pleural effusion/Thoracic mass]</div><br>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Pleura:</u> No effusion. Normal sliding/lung pulse present.</li>
+      <li><u>Lung:</u> Regular A-lines, no B-lines/consolidation.</li>
+      <li><u>Chest wall:</u> No soft tissue masses/fluid collections.</li>
+      <li><u>Diaphragm:</u> Normal excursion on dynamic assessment.</li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong> Normal chest ultrasound.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('usg-chest')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+      <details>
+        <summary class="sub">MSK</summary>
+        <ul>
+<li onclick="toggleTemplate('msk-knee')">Knee USG</li>
+<div id="msk-knee" class="template-container">
+  <div class="template-content">
+    <div><strong>KNEE ULTRASOUND</strong></div>
+    <div><em>Views: Quadriceps tendon, Patellar tendon, Suprapatellar recess, Medial/Lateral collateral ligaments, Menisci</em></div><br>
+    
+    <div><strong>MEASUREMENTS:</strong></div>
+    <ul>
+      <li>Joint effusion: ___ mm at suprapatellar pouch</li>
+      <li>Patellar tendon thickness: ___ mm (mid-portion)</li>
+      <li>Quadriceps tendon thickness: ___ mm</li>
+    </ul>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Tendons:</u>
+        <ul>
+          <li>Quadriceps/patellar tendons: Normal fibrillar pattern</li>
+          <li>No tendinosis/tear</li>
+        </ul>
+      </li>
+      <li><u>Joint:</u>
+        <ul>
+          <li>No significant effusion/synovial hypertrophy</li>
+          <li>Normal cartilage interface</li>
+        </ul>
+      </li>
+      <li><u>Ligaments:</u>
+        <ul>
+          <li>Medial/lateral collateral ligaments intact</li>
+        </ul>
+      </li>
+      <li><u>Bursae:</u>
+        <ul>
+          <li>Prepatellar/suprapatellar bursae normal</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('msk-knee')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<li onclick="toggleTemplate('msk-shoulder')">Shoulder USG</li>
+<div id="msk-shoulder" class="template-container">
+  <div class="template-content">
+    <div><strong>SHOULDER ULTRASOUND</strong></div>
+    <div><em>Views: Biceps tendon, Subscapularis, Supraspinatus, Infraspinatus, Acromioclavicular joint, Posterior labrum</em></div><br>
+    
+    <div><strong>MEASUREMENTS:</strong></div>
+    <ul>
+      <li>Subacromial-subdeltoid bursa: ___ mm</li>
+      <li>Supraspinatus thickness: ___ mm</li>
+      <li>Joint effusion: ___ mm at biceps sheath</li>
+    </ul>
+    
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li><u>Rotator cuff:</u>
+        <ul>
+          <li>Supraspinatus/infraspinatus/subscapularis: Normal thickness/echotexture</li>
+          <li>No full-/partial-thickness tear</li>
+        </ul>
+      </li>
+      <li><u>Biceps tendon:</u>
+        <ul>
+          <li>Normal position within bicipital groove</li>
+          <li>No tenosynovitis/subluxation</li>
+        </ul>
+      </li>
+      <li><u>Joint spaces:</u>
+        <ul>
+          <li>No AC joint degeneration</li>
+          <li>Normal glenohumeral joint recess</li>
+        </ul>
+      </li>
+      <li><u>Dynamic assessment:</u>
+        <ul>
+          <li>Normal tendon mobility under acromion</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('msk-shoulder')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>        </ul>
+      </details>
+    </ul>
+  </details>
+
+  <!-- Doppler Section -->
+  <details class="dropdown doppler">
+    <summary><i class="fas fa-wave-square"></i>Doppler</summary>
+    <ul>
+      <!-- Carotid Doppler -->
+<li onclick="toggleTemplate('doppler-carotid')">Carotid Doppler</li>
+<div id="doppler-carotid" class="template-container">
+  <div class="template-content">
+    <div><strong>CAROTID DOPPLER</strong></div><br>
+
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li>Bilateral common, internal, and external carotid arteries visualized.</li>
+      <li>Peak systolic velocities (PSV):</li>
+      <ul>
+        <li>Right CCA: ___ cm/s</li>
+        <li>Right ICA: ___ cm/s</li>
+        <li>Left CCA: ___ cm/s</li>
+        <li>Left ICA: ___ cm/s</li>
+      </ul>
+      <li>ICA/CCA ratio: ___</li>
+      <li>No focal stenosis, plaque, or significant intimal thickening seen.</li>
+      <li>Normal spectral waveforms and flow direction bilaterally.</li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <div>Normal carotid Doppler study. No evidence of significant stenosis or flow abnormality.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('doppler-carotid')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- Upper Limb Arterial Doppler -->
+<li onclick="toggleTemplate('doppler-upper-arterial')">Upper Limb Arterial Doppler</li>
+<div id="doppler-upper-arterial" class="template-container">
+  <div class="template-content">
+    <div><strong>UPPER LIMB ARTERIAL DOPPLER</strong></div><br>
+
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li>Subclavian, axillary, brachial, radial, and ulnar arteries visualized bilaterally.</li>
+      <li>Peak systolic velocities (PSV):</li>
+      <ul>
+        <li>Right: Subclavian ___ / Axillary ___ / Brachial ___ / Radial ___ / Ulnar ___ cm/s</li>
+        <li>Left: Subclavian ___ / Axillary ___ / Brachial ___ / Radial ___ / Ulnar ___ cm/s</li>
+      </ul>
+      <li>Triphasic waveforms noted in all arteries with normal flow direction.</li>
+      <li>No evidence of luminal narrowing, thrombus, or arterial wall abnormality.</li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <div>Normal upper limb arterial Doppler study. No evidence of stenosis or obstruction.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('doppler-upper-arterial')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- Upper Limb Venous Doppler -->
+<li onclick="toggleTemplate('doppler-upper-venous')">Upper Limb Venous Doppler</li>
+<div id="doppler-upper-venous" class="template-container">
+  <div class="template-content">
+    <div><strong>UPPER LIMB VENOUS DOPPLER</strong></div><br>
+
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li>Subclavian, axillary, brachial, cephalic, and basilic veins visualized bilaterally.</li>
+      <li>Veins are compressible with normal phasic flow and augmentation.</li>
+      <li>No evidence of thrombosis or venous wall thickening.</li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <div>Normal upper limb venous Doppler study. No evidence of deep or superficial venous thrombosis.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('doppler-upper-venous')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- Lower Limb Arterial Doppler -->
+<li onclick="toggleTemplate('doppler-lower-arterial')">Lower Limb Arterial Doppler</li>
+<div id="doppler-lower-arterial" class="template-container">
+  <div class="template-content">
+    <div><strong>LOWER LIMB ARTERIAL DOPPLER</strong></div><br>
+
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li>Common femoral, superficial femoral, popliteal, anterior tibial, posterior tibial, and dorsalis pedis arteries visualized bilaterally.</li>
+      <li>Peak systolic velocities (PSV):</li>
+      <ul>
+        <li>Right: CFA ___ / SFA ___ / Popliteal ___ / ATA ___ / PTA ___ / DPA ___ cm/s</li>
+        <li>Left: CFA ___ / SFA ___ / Popliteal ___ / ATA ___ / PTA ___ / DPA ___ cm/s</li>
+      </ul>
+      <li>Triphasic waveforms with normal flow direction in all segments.</li>
+      <li>No evidence of stenosis, occlusion, or wall calcification.</li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <div>Normal lower limb arterial Doppler study. No flow-limiting stenosis or occlusion seen.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('doppler-lower-arterial')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- Lower Limb Venous Doppler -->
+<li onclick="toggleTemplate('doppler-lower-venous')">Lower Limb Venous Doppler</li>
+<div id="doppler-lower-venous" class="template-container">
+  <div class="template-content">
+    <div><strong>LOWER LIMB VENOUS DOPPLER</strong></div><br>
+
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li>Common femoral, superficial femoral, popliteal, posterior tibial, and peroneal veins visualized bilaterally.</li>
+      <li>Veins are compressible with spontaneous and phasic flow.</li>
+      <li>Augmentation and reflux studies show no abnormalities.</li>
+      <li>No evidence of DVT or venous insufficiency.</li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <div>Normal lower limb venous Doppler study. No deep or superficial venous thrombosis.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('doppler-lower-venous')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<!-- Varicose Veins Doppler Report -->
+<li onclick="toggleTemplate('varicose-veins')">Varicose Veins Doppler</li>
+<div id="varicose-veins" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>LOWER LIMB VENOUS DOPPLER REPORT</strong></div>
+    <div><em>Ultrasound Assessment for Varicose Veins</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> B-mode, color Doppler, and spectral waveform analysis in standing/semi-recumbent position</li>
+      
+      <li><strong>Deep Venous System:</strong>
+        <ul>
+          <li>Patent CFV, SFV, POPV, and calf veins</li>
+          <li>No DVT or reflux (>0.5 sec)</li>
+        </ul>
+      </li>
+      
+      <li><strong>Great Saphenous Vein (GSV):</strong>
+        <table class="vein-table">
+          <tr>
+            <th>Level</th>
+            <th>Diameter (mm)</th>
+            <th>Reflux</th>
+          </tr>
+          <tr>
+            <td>Saphenofemoral junction (SFJ)</td>
+            <td>__</td>
+            <td>Yes/No (__ sec)</td>
+          </tr>
+          <tr>
+            <td>Thigh (mid)</td>
+            <td>__</td>
+            <td>Yes/No</td>
+          </tr>
+          <tr>
+            <td>Knee</td>
+            <td>__</td>
+            <td>Yes/No</td>
+          </tr>
+          <tr>
+            <td>Calf</td>
+            <td>__</td>
+            <td>Yes/No</td>
+          </tr>
+        </table>
+      </li>
+      
+      <li><strong>Small Saphenous Vein (SSV):</strong>
+        <table class="vein-table">
+          <tr>
+            <th>Level</th>
+            <th>Diameter (mm)</th>
+            <th>Reflux</th>
+          </tr>
+          <tr>
+            <td>Saphenopopliteal junction (SPJ)</td>
+            <td>__</td>
+            <td>Yes/No (__ sec)</td>
+          </tr>
+          <tr>
+            <td>Mid-calf</td>
+            <td>__</td>
+            <td>Yes/No</td>
+          </tr>
+        </table>
+      </li>
+      
+      <li><strong>Perforator Veins:</strong>
+        <table class="vein-table">
+          <tr>
+            <th>Location</th>
+            <th>Diameter (mm)</th>
+            <th>Reflux</th>
+            <th>Connection</th>
+          </tr>
+          <tr>
+            <td><strong>GSV Thigh Perforators</strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Hunterian (medial thigh)</td>
+            <td>__</td>
+            <td>Yes/No</td>
+            <td>GSV → Femoral</td>
+          </tr>
+          <tr>
+            <td>Dodd (distal thigh)</td>
+            <td>__</td>
+            <td>Yes/No</td>
+            <td>GSV → Femoral</td>
+          </tr>
+          <tr>
+            <td><strong>GSV Calf Perforators</strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Boyd (proximal calf)</td>
+            <td>__</td>
+            <td>Yes/No</td>
+            <td>GSV → Posterior tibial</td>
+          </tr>
+          <tr>
+            <td>Cockett (distal calf)</td>
+            <td>__</td>
+            <td>Yes/No</td>
+            <td>GSV → Posterior tibial</td>
+          </tr>
+          <tr>
+            <td><strong>SSV Perforators</strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Bassi (mid-calf)</td>
+            <td>__</td>
+            <td>Yes/No</td>
+            <td>SSV → Gastrocnemius</td>
+          </tr>
+        </table>
+      </li>
+      
+      <li><strong>Varicosities:</strong>
+        <ul>
+          <li>Location: Medial/lateral/posterior thigh/leg</li>
+          <li>Size: Largest cluster __ mm diameter</li>
+        </ul>
+      </li>
+      
+      <li><strong>CEAP Classification:</strong>
+        <ul>
+          <li>C: __ (0-6)</li>
+          <li>E: __ (Ep: primary, Es: secondary)</li>
+          <li>A: __ (As: superficial, Ap: perforator, Ad: deep)</li>
+          <li>P: __ (Pr: reflux, Po: obstruction)</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Primary/Secondary varicose veins involving GSV/SSV/perforators</li>
+      <li>Reflux present at: [SFJ/SPJ/Perforator level] (duration __ sec)</li>
+      <li>GSV diameter > __ mm at [level], meeting criteria for ablation</li>
+      <li>No evidence of DVT</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('varicose-veins')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<style>
+.vein-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+.vein-table th, .vein-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+.vein-table th {
+  background-color: #f2f2f2;
+}
+</style>
+<!-- AV Fistula Preop Doppler -->
+<li onclick="toggleTemplate('avf-preop')">AV Fistula Preop Doppler(for planning)</li>
+<div id="avf-preop" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>PREOPERATIVE ARTERIOVENOUS FISTULA MAPPING REPORT</strong></div>
+    <div><em>Upper Limb Doppler Ultrasound for AV Access Planning</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> B-mode, color Doppler, and spectral analysis with tourniquet application</li>
+      <li><strong>Side:</strong> Right/Left forearm</li>
+      
+      <li><strong>Arterial Evaluation:</strong>
+        <table class="vessel-table">
+          <tr>
+            <th>Artery</th>
+            <th>Diameter (mm)</th>
+            <th>Peak Systolic Velocity (cm/s)</th>
+            <th>Resistive Index</th>
+            <th>Wall Calcification</th>
+          </tr>
+          <tr>
+            <td>Brachial (antecubital)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__</td>
+            <td>None/Mild/Moderate/Severe</td>
+          </tr>
+          <tr>
+            <td>Radial (wrist)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__</td>
+            <td>None/Mild/Moderate/Severe</td>
+          </tr>
+          <tr>
+            <td>Radial (mid-forearm)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__</td>
+            <td>None/Mild/Moderate/Severe</td>
+          </tr>
+          <tr>
+            <td>Ulnar (wrist)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__</td>
+            <td>None/Mild/Moderate/Severe</td>
+          </tr>
+          <tr>
+            <td>Allen Test</td>
+            <td colspan="4">Patent palmar arch (Yes/No)</td>
+          </tr>
+        </table>
+      </li>
+      
+      <li><strong>Venous Evaluation:</strong>
+        <table class="vessel-table">
+          <tr>
+            <th>Vein</th>
+            <th>Diameter (mm)*</th>
+            <th>Depth (mm)</th>
+            <th>Distance from Artery (mm)</th>
+            <th>Wall Compressibility</th>
+            <th>Collaterals</th>
+          </tr>
+          <tr>
+            <td>Cephalic (wrist)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__ (from radial artery)</td>
+            <td>Compressible/Non-compressible</td>
+            <td>None/Present</td>
+          </tr>
+          <tr>
+            <td>Cephalic (mid-forearm)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__ (from radial artery)</td>
+            <td>Compressible/Non-compressible</td>
+            <td>None/Present</td>
+          </tr>
+          <tr>
+            <td>Cephalic (antecubital)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__ (from brachial artery)</td>
+            <td>Compressible/Non-compressible</td>
+            <td>None/Present</td>
+          </tr>
+          <tr>
+            <td>Basilic (wrist)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__ (from ulnar artery)</td>
+            <td>Compressible/Non-compressible</td>
+            <td>None/Present</td>
+          </tr>
+          <tr>
+            <td>Basilic (mid-forearm)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__ (from ulnar artery)</td>
+            <td>Compressible/Non-compressible</td>
+            <td>None/Present</td>
+          </tr>
+          <tr>
+            <td>Basilic (antecubital)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__ (from brachial artery)</td>
+            <td>Compressible/Non-compressible</td>
+            <td>None/Present</td>
+          </tr>
+          <tr>
+            <td colspan="6"><em>*Measured with tourniquet applied</em></td>
+          </tr>
+        </table>
+      </li>
+      
+      <li><strong>Additional Findings:</strong>
+        <ul>
+          <li>Venous stenosis: None/Present (location: __, % stenosis: __)</li>
+          <li>Thrombus: None/Present (location: __)</li>
+          <li>Accessory veins: None/Present (location: __)</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>RECOMMENDED ACCESS SITE:</strong></div>
+    <ol>
+      <li><strong>Primary Option:</strong> __ (Radiocephalic/Brachiocephalic/Brachibasilic) at __ level</li>
+      <ul>
+        <li>Artery diameter: __ mm</li>
+        <li>Vein diameter: __ mm</li>
+        <li>Distance between vessels: __ mm</li>
+      </ul>
+      <li><strong>Secondary Option:</strong> __ (if primary unsuitable)</li>
+    </ol>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>__ mm [artery] and __ mm [vein] at __ level meet criteria for AVF creation (minimum artery ≥2.0mm, vein ≥2.5mm)</li>
+      <li>Vessel depth __ mm (optimal <6mm for superficial access)</li>
+      <li>No significant stenosis/thrombus in candidate vessels</li>
+      <li>Allen test: Adequate/Inadequate collateral flow</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('avf-preop')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<style>
+.vessel-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.vessel-table th, .vessel-table td {
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: left;
+}
+.vessel-table th {
+  background-color: #f2f2f2;
+}
+</style>
+
+<!-- AV Fistula Postop Doppler -->
+<li onclick="toggleTemplate('avf-postop')">AV Fistula Postop Doppler</li>
+<div id="avf-postop" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>POSTOPERATIVE AV FISTULA DOPPLER REPORT</strong></div>
+    <div><em>Ultrasound Evaluation for Maturity, Flow, and Complications</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> B-mode, color Doppler, spectral waveform analysis with 60° angle correction</li>
+      <li><strong>Fistula Type:</strong> Radiocephalic/Brachiocephalic/Brachibasilic transposition</li>
+      <li><strong>Postop Day:</strong> __</li>
+      
+      <li><strong>Fistula Maturity Assessment:</strong>
+        <table class="fistula-table">
+          <tr>
+            <th>Parameter</th>
+            <th>Measurement</th>
+            <th>Target for Maturity*</th>
+          </tr>
+          <tr>
+            <td>Arterial Diameter (anastomosis)</td>
+            <td>__ mm</td>
+            <td>≥4.0 mm</td>
+          </tr>
+          <tr>
+            <td>Venous Diameter (outflow)</td>
+            <td>__ mm</td>
+            <td>≥5.0 mm</td>
+          </tr>
+          <tr>
+            <td>Depth from skin</td>
+            <td>__ mm</td>
+            <td><6 mm</td>
+          </tr>
+          <tr>
+            <td>Flow Volume (brachial artery)</td>
+            <td>__ mL/min</td>
+            <td>≥500 mL/min</td>
+          </tr>
+        </table>
+        <em>*KDOQI Guidelines</em>
+      </li>
+      
+      <li><strong>Flow Characteristics:</strong>
+        <table class="flow-table">
+          <tr>
+            <th>Location</th>
+            <th>Peak Systolic Velocity (cm/s)</th>
+            <th>End-Diastolic Velocity (cm/s)</th>
+            <th>Resistive Index</th>
+          </tr>
+          <tr>
+            <td>Inflow Artery (proximal)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__</td>
+          </tr>
+          <tr>
+            <td>Anastomosis</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__</td>
+          </tr>
+          <tr>
+            <td>Outflow Vein (mid)</td>
+            <td>__</td>
+            <td>__</td>
+            <td>__</td>
+          </tr>
+        </table>
+      </li>
+      
+      <li><strong>Thrombosis Evaluation:</strong>
+        <ul>
+          <li><strong>Inflow Artery:</strong> Patent/Thrombosed (__% stenosis if present)</li>
+          <li><strong>Anastomosis:</strong> Patent/Stenosed (PSV ratio: __; normal ≤3:1)</li>
+          <li><strong>Outflow Vein:</strong> Patent/Thrombosed (__ cm segment involved)</li>
+          <li><strong>Collaterals:</strong> None/Present (indicating outflow obstruction)</li>
+        </ul>
+      </li>
+      
+      <li><strong>Complications:</strong>
+        <ul>
+          <li><strong>Stenosis:</strong> None/Present (location: __, % stenosis: __, PSV: __ cm/s)</li>
+          <li><strong>Pseudoaneurysm:</strong> None/Present (size: __ × __ mm)</li>
+          <li><strong>Steal Syndrome:</strong> None/Suspected (reversed flow in distal artery: Yes/No)</li>
+          <li><strong>Infection:</strong> None/Present (peri-anastomotic fluid: Yes/No)</li>
+        </ul>
+      </li>
+      
+      <li><strong>Cannulation Zone:</strong>
+        <ul>
+          <li>Outflow vein length suitable for dialysis: __ cm</li>
+          <li>Depth at cannulation site: __ mm</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li><strong>Fistula Status:</strong> 
+        <ul>
+          <li>Immature/Maturing/Mature (meets __/4 KDOQI criteria)</li>
+          <li>Flow volume: Low/Adequate/High (__ mL/min)</li>
+        </ul>
+      </li>
+      <li><strong>Thrombosis:</strong> None/Partial/Complete (location: __)</li>
+      <li><strong>Stenosis:</strong> None/Hemodynamically significant (PSV ratio __ at __ location)</li>
+      <li><strong>Recommendations:</strong>
+        <ul>
+          <li>Continue maturation exercises/Close monitoring/Intervention needed</li>
+          <li>Planned intervention: __ (angiogram/thrombectomy/revision)</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('avf-postop')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<style>
+.fistula-table, .flow-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 14px;
+}
+.fistula-table th, .fistula-table td, 
+.flow-table th, .flow-table td {
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: left;
+}
+.fistula-table th, .flow-table th {
+  background-color: #f2f2f2;
+}
+</style>
+<!-- Renal Artery Doppler -->
+<li onclick="toggleTemplate('doppler-renal-artery')">Renal Artery Doppler</li>
+<div id="doppler-renal-artery" class="template-container">
+  <div class="template-content">
+    <div><strong>RENAL ARTERY DOPPLER</strong></div><br>
+
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li>Main renal arteries, segmental branches, and intrarenal arteries visualized bilaterally.</li>
+      <li>Peak systolic velocities:</li>
+      <ul>
+        <li>Right main renal artery: ___ cm/s</li>
+        <li>Left main renal artery: ___ cm/s</li>
+      </ul>
+      <li>Resistive Index (RI):</li>
+      <ul>
+        <li>Right: ___</li>
+        <li>Left: ___</li>
+      </ul>
+      <li>No evidence of renal artery stenosis or parenchymal flow abnormality.</li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <div>Normal renal artery Doppler study. No signs of renovascular hypertension or ischemia.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('doppler-renal-artery')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- Splenoportal Axis Doppler -->
+<li onclick="toggleTemplate('doppler-spa')">SPA (Splenoportal Axis) Doppler</li>
+<div id="doppler-spa" class="template-container">
+  <div class="template-content">
+    <div><strong>SPLEENOPORTAL AXIS (SPA) DOPPLER</strong></div><br>
+
+    <div><strong>FINDINGS:</strong></div>
+    <ul>
+      <li>Main portal vein, splenic vein, and superior mesenteric vein well visualized.</li>
+      <li>Flow is hepatopetal in portal vein with normal phasic waveform.</li>
+      <li>Velocities:</li>
+      <ul>
+        <li>Portal vein: ___ cm/s</li>
+        <li>Splenic vein: ___ cm/s</li>
+        <li>SMV: ___ cm/s</li>
+      </ul>
+      <li>No thrombus, collaterals, or reversal of flow noted.</li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <div>Normal SPA Doppler. No signs of portal hypertension or flow abnormality.</div>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('doppler-spa')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+    </ul>
+  </details>
+
+  <!-- Obstetrics Section -->
+  <details class="dropdown obg">
+    <summary><i class="fas fa-baby"></i>Obstetrics</summary>
+    <ul>
+     <li onclick="toggleTemplate('early-pregnancy')">Early Pregnancy Scan</li>
+<div id="early-pregnancy" class="template-container">
+  <div class="template-content">
+    <div><strong>EARLY PREGNANCY ULTRASOUND</strong></div>
+    <div><em>Transabdominal/Transvaginal scan as appropriate</em></div><br>
+    
+    <ul>
+      <li>Single intrauterine gestational sac seen.</li>
+      <li>Yolk sac: Present</li>
+      <li>Fetal pole: Seen </li>
+      
+      <li>CRL: ___ mm = ___ weeks ___ days</li>
+<li>Cardiac activity: present (FHR ___ bpm)</li> 
+<li>Edd( according to usg) : </li>
+
+      <li>Uterus: Normal in size and echotexture</li>
+      <li>Endometrial reaction consistent with pregnancy</li>
+      <li>Adnexa: No adnexal mass / corpus luteum seen</li>
+      <li>Pouch of Douglas: No free fluid</li>
+      <li>Cervix: Closed, length ___ mm</li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <p>Single intrauterine viable gestation of ___ weeks ___ days.</p>
+    <p><strong>Note:</strong>  All early pregnancy findings subject to follow-up.</p>
+ <button class="copy-btn" onclick="copyToClipboard('tiffa-detailed')">
+  <i class="fas fa-copy"></i> Copy
+</button> </div>
+</div>
+
+<li onclick="toggleTemplate('nt-scan')">NT Scan</li>
+<div id="nt-scan" class="template-container">
+  <div class="template-content">
+    <div><strong>NUCHAL TRANSLUCENCY (NT) SCAN</strong></div>
+    <div><em>Performed between 11 to 13 weeks + 6 days gestation</em></div><br>
+    
+    <ul>
+      <li>Gestational age by CRL: ___ mm = ___ weeks ___ days</li>
+      <li>Single live intrauterine fetus with cardiac activity(<FHR:___></FHR:___>bpm)</li>
+      <li>Nuchal translucency: ___ mm</li>
+      <li>Nasal bone: Seen </li>
+      <li>Ductus venosus flow: Normal </li>
+      <li>Tricuspid flow: No tricuspid regurgitation.</li>
+      <li>Uterus and adnexa: Normal</li>
+      <li>Cervix: Closed, length ___ mm</li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <p>Single live intrauterine fetus of ___ weeks ___ days by CRL.</p>
+    <p><strong>Note:</strong> NT scan is a screening tool. Correlation with double marker test is recommended. Fetal sex determination not done.</p>
+  </div>
+<button class="copy-btn" onclick="copyToClipboard('tiffa-detailed')">
+  <i class="fas fa-copy"></i> Copy
+</button></div>
+
+<li onclick="toggleTemplate('tiffa-detailed')">TIFFA Scan </li>
+<div id="tiffa-detailed" class="template-container">
+  <div class="template-content">
+    <div><strong>TIFFA (ANOMALY) SCAN REPORT</strong></div>
+    <div><em>Performed at ___ weeks ___ days gestation (based on LMP/CRL)</em></div><br>
+
+    <h4>FETAL BIOMETRY</h4>
+    <ul>
+      <li>BPD: ___ mm = ___ weeks ___ days</li>
+      <li>HC: ___ mm = ___ weeks ___ days</li>
+      <li>AC: ___ mm = ___ weeks ___ days</li>
+      <li>FL: ___ mm = ___ weeks ___ days</li>
+      <li>EFW (Hadlock): ___ grams</li>
+    </ul>
+
+    <h4>FETAL LIE & PRESENTATION</h4>
+    <p>Longitudinal lie with _______ presentation</p>
+
+    <h4>AMNIOTIC FLUID</h4>
+    <p>AFI: ___ cm </p>
+
+    <h4>PLACENTA</h4>
+    <p>Location: ________</p>
+    <p>Grade: ______</p>
+    <p>No evidence of placenta previa / abruption</p>
+
+    <h4>CERVIX</h4>
+    <p>Length: ___ mm</p>
+    <p>Internal os: Closed</p>
+
+    <h4>UMBILICAL CORD</h4>
+    <p>Three-vessel cord confirmed</p>
+    <p>Normal cord insertion</p>
+
+    <h4>ANATOMICAL SURVEY</h4>
+    <ul>
+      <li><strong>Skull/Brain:</strong> Normal skull shape. Midline falx seen. Cavum septum pellucidum visualized. Lateral ventricles within normal limits. Cerebellum and cisterna magna normal.</li>
+      <li><strong>Face:</strong> Orbits and lens present. Nasal bone visualized. Upper lip appears intact (No cleft lip).</li>
+      <li><strong>Spine:</strong> Normal vertebral alignment and skin covering seen in longitudinal and transverse planes.</li>
+      <li><strong>Neck:</strong> No evidence of cystic hygroma or nuchal thickening.</li>
+      <li><strong>Thorax:</strong> Normal thoracic circumference. Lung echotexture homogeneous. Heart occupies normal position and size within thorax.</li>
+      <li><strong>Heart:</strong> Four-chamber view normal. Outflow tracts seen. Cardiac activity present with FHR ___ bpm.</li>
+      <li><strong>Abdomen:</strong> Abdominal wall intact. Stomach bubble seen. Kidneys visualized. Bladder visualized. Umbilical cord insertion normal.</li>
+      <li><strong>Limbs:</strong> All four limbs visualized with normal movements. Hands and feet appear normal. Long bones within normal range.</li>
+      <li><strong>Genitalia:</strong> Male/Female features noted (optional — write “not commented” if required)</li>
+    </ul>
+
+    <h4>IMPRESSION</h4>
+    <p>Single live intrauterine fetus of ___ weeks ___ days by biometry.</p>
+    <p>Fetal anatomy appears normal. No gross congenital anomaly detected at the time of scan.</p>
+
+    <h4>COMMENTS / LEGAL NOTE</h4>
+    <p>This is a screening examination. Some structural anomalies may not be detected depending on fetal position, maternal habitus, and gestational age.</p>
+    <p><strong>Fetal sex determination has NOT been performed, as per the PCPNDT Act.</strong></p>
+  </div>
+<button class="copy-btn" onclick="copyToClipboard('tiffa-detailed')">
+  <i class="fas fa-copy"></i> Copy
+</button></div>
+
+<li onclick="toggleTemplate('growth-scan')">Growth Scan</li>
+<div id="growth-scan" class="template-container">
+  <div class="template-content">
+    <div><strong>GROWTH SCAN</strong></div>
+    <div><em>Fetal biometry, presentation, placental position, AFI</em></div><br>
+
+    <ul>
+      <li>GA by LMP: ___ weeks ___ days</li>
+      <li>BPD: ___ mm = ___ weeks ___ days</li>
+      <li>HC: ___ mm = ___ weeks ___ days</li>
+      <li>AC: ___ mm = ___ weeks ___ days</li>
+      <li>FL: ___ mm = ___ weeks ___ days</li>
+      <li>AGA : ____weeks___days</li>
+      <li>EFW: ___ g (approximate)</li>
+      <li>Fetal movements: Present</li>
+      <li>Fetal presentation: </li>
+      <li>Placenta: , Grade ___, not low lying</li>
+      <li>Amniotic fluid: ___ cm (AFI)</li>
+      <li>Cervix: Length ___ mm, closed</li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <p>Single live intrauterine fetus of ___ weeks ___ days by biometry. .</p>
+    <p><strong>Note:</strong> This is not an anomaly scan. If TIFFA scan has not been done previously, it is recommended. Biometric accuracy decreases in late gestation. Follow-up may be needed to assess growth and rule out IUGR.</p>
+  <button class="copy-btn" onclick="copyToClipboard('tiffa-detailed')">
+  <i class="fas fa-copy"></i> Copy
+</button></div>
+</div>
+
+<li onclick="toggleTemplate('fetal-doppler')">Fetal Doppler</li>
+<div id="fetal-doppler" class="template-container">
+  <div class="template-content">
+    <div><strong>FETAL DOPPLER STUDY</strong></div>
+    <div><em>Assessment of fetal and placental circulation</em></div><br>
+
+    <ul>
+      <li>Umbilical artery PI: ___</li>
+      <li>Umbilical artery RI: ___</li>
+      <li>MCA PI: ___</li>
+      <li>MCA RI: ___</li>
+      <li>Cerebroplacental Ratio (CPR): ___</li>
+      <li>Ductus venosus: Normal / Abnormal waveform</li>
+      <li>Placenta: Anterior/Posterior/Fundal, Grade ___</li>
+      <li>Amniotic fluid: ___ cm (AFI)</li>
+      <li>EFW: ___ g</li>
+      <li>Presentation: Cephalic/Breech</li>
+      <li>Cervix: Length ___ mm, closed</li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <p>Fetal Doppler parameters within normal limits for gestation.</p>
+    <p><strong>Note:</strong> Fetal Doppler is a screening tool. Serial evaluations may be necessary in cases of suspected IUGR or maternal high-risk status.</p>
+ <button class="copy-btn" onclick="copyToClipboard('tiffa-detailed')">
+  <i class="fas fa-copy"></i> Copy
+</button> </div>
+</div>
+    </ul>
+  </details>
+
+  <!-- CT Section -->
+  <details class="dropdown ct">
+    <summary><i class="fas fa-desktop"></i>CT</summary>
+    <ul>
+      <details>
+        <summary class="sub">Brain</summary>
+        <ul>
+          <li onclick="toggleTemplate('ncct-brain')">NCCT Brain (Non-Contrast)</li>
+    <div id="ncct-brain" class="template-container hidden">
+        <div class="template-content">
+            <div><strong>NCCT BRAIN REPORT</strong></div>
+            <div><em>Non-Contrast Computed Tomography of the Brain</em></div><br>
+            
+            <ul>
+                <li><strong>Technique:</strong> Axial sections from vertex to skull base without IV contrast.</li>
+                <li><strong>Brain Parenchyma:</strong> Normal grey-white matter differentiation. No focal hypodensity or hyperdensity.</li>
+                <li><strong>Ventricles:</strong> Normal size and configuration. No midline shift.</li>
+                <li><strong>Basal Cisterns:</strong> Patent.</li>
+                <li><strong>Sulci and Gyri:</strong> Age-appropriate.</li>
+                <li><strong>Calvarium:</strong> Intact. No fractures or erosions.</li>
+                <li><strong>Sinuses/Mastoids:</strong> Clear.</li>
+            </ul>
+            
+            <div><strong>IMPRESSION:</strong></div>
+            <p>Normal NCCT brain study.</p>
+        </div>
+        <button class="copy-btn" onclick="copyToClipboard('ncct-brain')">
+            <i class="fas fa-copy"></i> Copy
+        </button>
+    </div>
+
+    <!-- CECT Brain -->
+    <li onclick="toggleTemplate('cect-brain')">CECT Brain (Contrast-Enhanced)</li>
+    <div id="cect-brain" class="template-container hidden">
+        <div class="template-content">
+            <div><strong>CECT BRAIN REPORT</strong></div>
+            <div><em>Contrast-Enhanced Computed Tomography of the Brain</em></div><br>
+            
+            <ul>
+                <li><strong>Technique:</strong> Axial sections with IV contrast administration.</li>
+                <li><strong>Brain Parenchyma:</strong> No abnormal enhancement or mass lesions. Grey-white differentiation preserved.</li>
+                <li><strong>Ventricles:</strong> Normal in size and shape. No obstructive hydrocephalus.</li>
+                <li><strong>Vascular Structures:</strong> Normal enhancement of major arteries and veins.</li>
+                <li><strong>Extra-Axial Spaces:</strong> No subdural or epidural collections.</li>
+                <li><strong>Calvarium/Soft Tissues:</strong> Unremarkable.</li>
+            </ul>
+            
+            <div><strong>IMPRESSION:</strong></div>
+            <p>Normal CECT brain study.</p>
+        </div>
+        <button class="copy-btn" onclick="copyToClipboard('cect-brain')">
+            <i class="fas fa-copy"></i> Copy
+        </button>
+    </div>
+
+    <!-- CT Brain Angio -->
+    <li onclick="toggleTemplate('ct-angio-brain')">CT Brain Angiography (Arterial)</li>
+    <div id="ct-angio-brain" class="template-container hidden">
+        <div class="template-content">
+            <div><strong>CT BRAIN ANGIOGRAPHY REPORT</strong></div>
+            <div><em>Computed Tomography Angiography of the Cerebral Arteries</em></div><br>
+            
+            <ul>
+                <li><strong>Technique:</strong> Volumetric acquisition with IV contrast, 3D reconstructions (MIP/VR).</li>
+                <li><strong>Internal Carotid Arteries (ICA):</strong> Patent bilaterally. No stenosis or aneurysms.</li>
+                <li><strong>Anterior Cerebral Arteries (ACA):</strong> Normal course and caliber.</li>
+                <li><strong>Middle Cerebral Arteries (MCA):</strong> Symmetrical filling. No occlusions.</li>
+                <li><strong>Posterior Circulation (Vertebrobasilar):</strong> Unremarkable.</li>
+                <li><strong>Circle of Willis:</strong> Complete, without anomalies.</li>
+            </ul>
+            
+            <div><strong>IMPRESSION:</strong></div>
+            <p>Normal CT angiography of the cerebral arteries.</p>
+        </div>
+        <button class="copy-btn" onclick="copyToClipboard('ct-angio-brain')">
+            <i class="fas fa-copy"></i> Copy
+        </button>
+    </div>
+
+    <!-- CT Brain Venogram -->
+    <li onclick="toggleTemplate('ct-veno-brain')">CT Brain Venogram (Venous)</li>
+    <div id="ct-veno-brain" class="template-container hidden">
+        <div class="template-content">
+            <div><strong>CT BRAIN VENOGRAPHY REPORT</strong></div>
+            <div><em>Computed Tomography Venography of the Cerebral Veins/Sinuses</em></div><br>
+            
+            <ul>
+                <li><strong>Technique:</strong> Delayed-phase imaging post IV contrast.</li>
+                <li><strong>Dural Sinuses:</strong> Superior sagittal, transverse, sigmoid sinuses patent.</li>
+                <li><strong>Deep Veins:</strong> Internal cerebral veins, vein of Galen, straight sinus normal.</li>
+                <li><strong>Cortical Veins:</strong> Unremarkable.</li>
+                <li><strong>Jugular Veins:</strong> No filling defects.</li>
+            </ul>
+            
+            <div><strong>IMPRESSION:</strong></div>
+            <p>Normal CT venography of the cerebral venous system.</p>
+        </div>
+        <button class="copy-btn" onclick="copyToClipboard('ct-veno-brain')">
+            <i class="fas fa-copy"></i> Copy
+        </button>
+    </div>
+        
+        </ul>
+      </details>
+
+      <details>
+        <summary class="sub">Skull & Facial Bones</summary>
+        <ul>
+          <!-- CT Skull & Facial Bones -->
+<li onclick="toggleTemplate('ct-skull-facial')">CT Skull & Facial Bones</li>
+<div id="ct-skull-facial" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT SKULL & FACIAL BONES REPORT</strong></div>
+    <div><em>Computed Tomography of Skull and Facial Bones</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Axial and coronal reconstructions with bone window.</li>
+      <li><strong>Calvarium:</strong> Intact. No fractures or lytic lesions.</li>
+      <li><strong>Frontal/Parletal/Temporal Bones:</strong> Normal architecture.</li>
+      <li><strong>Orbital Walls:</strong> Intact medial/lateral walls and floors.</li>
+      <li><strong>Nasal Bones:</strong> No fracture.</li>
+      <li><strong>Zygomatic Arches:</strong> Symmetrical, intact.</li>
+      <li><strong>Maxilla/Mandible:</strong> No fractures or destructive lesions.</li>
+      <li><strong>Sinuses:</strong> Clear maxillary, frontal, ethmoid and sphenoid sinuses.</li>
+      <li><strong>TM Joints:</strong> Normal alignment.</li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <p>Normal CT study of skull and facial bones.</p>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ct-skull-facial')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- CT Orbits -->
+<li onclick="toggleTemplate('ct-orbits')">CT Orbits</li>
+<div id="ct-orbits" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT ORBITS REPORT</strong></div>
+    <div><em>Computed Tomography of Orbits</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Thin-section axial and coronal images.</li>
+      <li><strong>Orbital Walls:</strong> Intact medial/lateral walls and orbital floors.</li>
+      <li><strong>Globes:</strong> Normal size, shape and position.</li>
+      <li><strong>Optic Nerves:</strong> Symmetrical, no thickening.</li>
+      <li><strong>Extraocular Muscles:</strong> Normal caliber and insertion.</li>
+      <li><strong>Lacrimal Apparatus:</strong> Unremarkable.</li>
+      <li><strong>Retrobulbar Fat:</strong> Normal attenuation.</li>
+      <li><strong>Orbital Apex:</strong> No bony narrowing or soft tissue lesions.</li>
+      <li><strong>Adjacent Sinuses:</strong> Clear ethmoid and maxillary sinuses.</li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <p>Normal CT study of orbits.</p>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ct-orbits')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+          
+        </ul>
+      </details>
+      <details>
+        <summary class="sub">Ct Pns </summary>
+        <ul>
+<!-- CT PNS (Paranasal Sinuses) - Detailed Anatomical Variants -->
+<li onclick="toggleTemplate('ct-pns')">CT PNS </li>
+<div id="ct-pns" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT PARANASAL SINUSES REPORT (WITH ANATOMICAL VARIANTS)</strong></div>
+    <div><em>Computed Tomography of Paranasal Sinuses with Anatomical Assessment</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Axial and coronal reconstructions (0.6mm) with bone and soft tissue windows</li>
+      
+      <li><strong>Sinuses:</strong>
+        <ul>
+          <li>Maxillary: Well-aerated bilaterally .</li>
+          <li>Frontal: Normally developed.</li>
+          <li>Ethmoid: Complete aeration.</li>
+          <li>Sphenoid: Pneumatization extends to ___</li>
+        </ul>
+      </li>
+      
+      <li><strong>Anatomical Variants:</strong>
+        <ul>
+          <li>Uncinate process: Type ___ (1:Normal, 2:Paradoxical, 3:Lateralized)</li>
+          <li>Haller cells: ___ (Present/Absent) Size: ___ mm</li>
+          <li>Onodi cells: ___ (Present/Absent) Relation to optic nerve: ___</li>
+          <li>Agger nasi cells: ___ (Present/Absent)</li>
+        </ul>
+      </li>
+      
+      <li><strong>Critical Structures:</strong>
+        <ul>
+          <li>Olfactory groove: Type ___ (Keros classification)</li>
+          <li>Optic nerve:
+            <ul>
+              <li>Protrusion: ___ (Present/Absent)</li>
+              <li>Dehiscence: ___ (Present/Absent)</li>
+              <li>Course: ___</li>
+            </ul>
+          </li>
+          <li>Internal carotid artery: ___ (Normal/Prominent/Dehiscent)</li>
+        </ul>
+      </li>
+      
+      <li><strong>Ostiomeatal Complex:</strong>
+        <ul>
+          <li>Right: Patent/Obstructed (___ mm width)</li>
+          <li>Left: Patent/Obstructed (___ mm width)</li>
+        </ul>
+      </li>
+      
+      <li><strong>Nasal Cavity:</strong>
+        <ul>
+          <li>Septum: ___ (Straight/Deviated to Right/Left)</li>
+          <li>Turbinates: ___ (Normal/Hypertrophic)</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <p>CT PNS demonstrating:</p>
+    <ul>
+      <li>Normal sinus aeration with ___ anatomical variants</li>
+      <li>Uncinate process type ___ bilaterally</li>
+      <li>___ (Presence/Absence) of Onodi/Haller cells</li>
+      <li>Olfactory groove type ___</li>
+      <li>___ optic nerve configuration</li>
+    </ul>
+    <p>No evidence of acute sinusitis or bony erosion.</p>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ct-pns')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>      </details>
+<details>
+        <summary class="sub">Ct Temporal bones </summary>
+        <ul>
+<!-- CT Temporal Bones -->
+<li onclick="toggleTemplate('ct-temporal-bones')">CT Temporal Bones</li>
+<div id="ct-temporal-bones" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT TEMPORAL BONES REPORT</strong></div>
+    <div><em>High-Resolution Computed Tomography of Temporal Bones</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Axial and coronal reconstructions (0.5-0.6mm) with bone algorithm</li>
+      
+      <li><strong>External Ear:</strong>
+        <ul>
+          <li>External auditory canals: Patent bilaterally</li>
+          <li>Pinna: Normal configuration</li>
+        </ul>
+      </li>
+      
+      <li><strong>Middle Ear:</strong>
+        <ul>
+          <li>Tympanic membranes: Intact bilaterally</li>
+          <li>Ossicular chain:
+            <ul>
+              <li>Malleus: Normal position and morphology</li>
+              <li>Incus: Normal articulation</li>
+              <li>Stapes: Crura intact, footplate normal</li>
+            </ul>
+          </li>
+          <li>Prussak's space: Normal</li>
+          <li>Scutum: Intact</li>
+        </ul>
+      </li>
+      
+      <li><strong>Inner Ear:</strong>
+        <ul>
+          <li>Cochlea:
+            <ul>
+              <li>Normal 2.5 turns</li>
+              <li>Modiolus: Complete</li>
+            </ul>
+          </li>
+          <li>Vestibule: Normal size and morphology</li>
+          <li>Semicircular canals:
+            <ul>
+              <li>Superior: Normal</li>
+              <li>Lateral: Normal</li>
+              <li>Posterior: Normal</li>
+            </ul>
+          </li>
+          <li>Vestibular aqueduct: Normal caliber (&lt;1.5mm at midpoint)</li>
+          <li>Internal auditory canals: Symmetrical (___ mm diameter)</li>
+        </ul>
+      </li>
+      
+      <li><strong>Mastoid Air Cells:</strong>
+        <ul>
+          <li>Pneumatization: ___ (Well-pneumatized/Moderate/Poor)</li>
+          <li>No evidence of opacification or coalescence</li>
+        </ul>
+      </li>
+      
+      <li><strong>Facial Nerve Canal:</strong>
+        <ul>
+          <li>Labyrinthine segment: Normal</li>
+          <li>Tympanic segment: Normal</li>
+          <li>Mastoid segment: Normal</li>
+        </ul>
+      </li>
+      
+      <li><strong>Vascular Structures:</strong>
+        <ul>
+          <li>Jugular bulbs: Normal position (Right: ___/Left: ___ mm from round window)</li>
+          <li>Carotid canals: Normal</li>
+          <li>Dehiscence: None identified</li>
+        </ul>
+      </li>
+      
+      <li><strong>Tegmen:</strong>
+        <ul>
+          <li>Intact bilaterally</li>
+          <li>No CSF leak signs</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal CT anatomy of both temporal bones</li>
+      <li>Intact ossicular chains bilaterally</li>
+      <li>Normal cochlear turns and vestibular structures</li>
+      <li>No evidence of erosive changes or congenital anomalies</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ct-temporal-bones')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>        </ul>
+      </details>
+      
+    <details>
+        <summary class="sub">Whole Spine</summary>
+        <ul>
+<!-- CT Whole Spine -->
+<li onclick="toggleTemplate('ct-whole-spine')">CT Whole Spine</li>
+<div id="ct-whole-spine" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT WHOLE SPINE REPORT</strong></div>
+    <div><em>Computed Tomography of Cervical, Thoracic and Lumbar Spine</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Volumetric acquisition with sagittal/coronal reformats (bone and soft tissue windows)</li>
+      
+      <li><strong>Alignment:</strong>
+        <ul>
+          <li>Cervical: Normal lordosis</li>
+          <li>Thoracic: Normal kyphosis</li>
+          <li>Lumbar: Normal lordosis</li>
+          <li>No listhesis or scoliosis</li>
+        </ul>
+      </li>
+      
+      <li><strong>Vertebral Bodies:</strong>
+        <ul>
+          <li>Height and morphology preserved throughout</li>
+          <li>No compression fractures or lytic lesions</li>
+          <li>Endplates: Intact</li>
+        </ul>
+      </li>
+      
+      <li><strong>Intervertebral Discs:</strong>
+        <ul>
+          <li>Normal height and hydration</li>
+          <li>No focal protrusions/extrusions</li>
+        </ul>
+      </li>
+      
+      <li><strong>Facet Joints:</strong>
+        <ul>
+          <li>Normal articulation bilaterally</li>
+          <li>No hypertrophy or degenerative changes</li>
+        </ul>
+      </li>
+      
+      <li><strong>Spinal Canal:</strong>
+        <ul>
+          <li>Patent throughout</li>
+          <li>No central canal stenosis</li>
+          
+        </ul>
+      </li>
+      
+      <li><strong>Neural Foramina:</strong>
+        <ul>
+          <li>Patent bilaterally at all levels</li>
+          <li>No foraminal narrowing</li>
+        </ul>
+      </li>
+      
+      <li><strong>Pars Interarticularis:</strong>
+        <ul>
+          <li>Intact bilaterally at all levels</li>
+          <li>No spondylolysis</li>
+        </ul>
+      </li>
+      
+      <li><strong>Soft Tissues:</strong>
+        <ul>
+          <li>Prevertebral and paravertebral soft tissues unremarkable</li>
+          <li>No abnormal masses or collections</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal CT appearance of cervical, thoracic and lumbar spine</li>
+      <li>Maintained vertebral body heights and alignment</li>
+      <li>No evidence of fracture, spondylolysis or listhesis</li>
+      <li>Patent spinal canal and neural foramina throughout</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ct-whole-spine')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>        </ul>
+      </details>
+
+      <details>
+        <summary class="sub">Chest</summary>
+        <ul>
+<!-- HRCT Chest -->
+<li onclick="toggleTemplate('hrct-chest')">HRCT Chest</li>
+<div id="hrct-chest" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>HRCT CHEST REPORT</strong></div>
+    <div><em>High-Resolution Computed Tomography of Thorax</em></div><br>
+
+    <ul>
+      <li><strong>Technique:</strong> Axial HRCT images obtained in full inspiration with thin sections; coronal and sagittal reconstructions performed.</li>
+
+      <li><strong>Lungs:</strong>
+        <ul>
+          <li>No evidence of ground-glass opacities or consolidation</li>
+          <li>No interlobular septal thickening or reticulations</li>
+          <li>No centrilobular or perilymphatic nodules</li>
+          <li>No evidence of honeycombing or fibrosis</li>
+          <li>Normal bronchovascular markings</li>
+        </ul>
+      </li>
+
+      <li><strong>Trachea and Bronchi:</strong>
+        <ul>
+          <li>Trachea is midline and patent</li>
+          <li>Main bronchi and segmental bronchi are normal in caliber, without wall thickening or luminal narrowing</li>
+          <li>No bronchiectasis</li>
+        </ul>
+      </li>
+
+      <li><strong>Mediastinum and Hila:</strong>
+        <ul>
+          <li>No mediastinal or hilar lymphadenopathy</li>
+          <li>Normal appearance of heart and great vessels</li>
+        </ul>
+      </li>
+
+      <li><strong>Pleura:</strong>
+        <ul>
+          <li>No pleural thickening, calcification, or effusion</li>
+        </ul>
+      </li>
+
+      <li><strong>Chest Wall:</strong>
+        <ul>
+          <li>No bony lesions or soft tissue abnormalities</li>
+        </ul>
+      </li>
+
+      <li><strong>Upper Abdomen:</strong>
+        <ul>
+          <li>Visualized sections of liver, spleen, adrenals, and kidneys are unremarkable</li>
+        </ul>
+      </li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal HRCT chest study</li>
+      <li>No features of interstitial lung disease, infection, or neoplasm</li>
+      <li>No pleural, mediastinal, or chest wall abnormalities</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('hrct-chest')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>  
+<!-- CECT Chest -->
+<li onclick="toggleTemplate('cect-chest')">CECT Chest</li>
+<div id="cect-chest" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CECT CHEST REPORT</strong></div>
+    <div><em>Contrast-Enhanced Computed Tomography of Chest</em></div><br>
+
+    <ul>
+      <li><strong>Technique:</strong> Axial images acquired post IV contrast, followed by coronal and sagittal reconstructions</li>
+      
+      <li><strong>Lungs:</strong>
+        <ul>
+          <li>No focal consolidation, mass, or cavitation</li>
+          <li>No evidence of ground-glass opacities or interstitial thickening</li>
+          <li>Bronchial tree: Normal caliber, no bronchiectasis</li>
+        </ul>
+      </li>
+
+      <li><strong>Pleura:</strong>
+        <ul>
+          <li>No pleural thickening or effusion</li>
+        </ul>
+      </li>
+
+      <li><strong>Mediastinum:</strong>
+        <ul>
+          <li>Trachea and main bronchi: Patent</li>
+          <li>No mediastinal lymphadenopathy</li>
+          <li>Heart and pericardium: Normal in size and contour</li>
+        </ul>
+      </li>
+
+      <li><strong>Vascular Structures:</strong>
+        <ul>
+          <li>Great vessels: Normal contrast opacification</li>
+        </ul>
+      </li>
+
+      <li><strong>Chest Wall:</strong>
+        <ul>
+          <li>No soft tissue mass or rib lesion</li>
+        </ul>
+      </li>
+
+      <li><strong>Upper Abdomen:</strong>
+        <ul>
+          <li>Visualized liver, spleen, adrenals, and kidneys appear normal</li>
+        </ul>
+      </li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal post-contrast study of the chest</li>
+      <li>No mass, consolidation, or lymphadenopathy</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('cect-chest')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- CTPA -->
+<li onclick="toggleTemplate('ctpa')">CT Pulmonary Angiography (CTPA)</li>
+<div id="ctpa" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT PULMONARY ANGIOGRAPHY (CTPA) REPORT</strong></div>
+    <div><em>Contrast-enhanced CT for pulmonary arterial evaluation</em></div><br>
+
+    <ul>
+      <li><strong>Technique:</strong> Thin axial images obtained in pulmonary arterial phase with MPRs</li>
+      
+      <li><strong>Pulmonary Arteries:</strong>
+        <ul>
+          <li>Good contrast opacification</li>
+          <li>No filling defects in main, lobar, segmental, or subsegmental branches</li>
+        </ul>
+      </li>
+
+      <li><strong>Lungs:</strong>
+        <ul>
+          <li>No pulmonary infarcts or consolidation</li>
+          <li>No pleural effusion</li>
+        </ul>
+      </li>
+
+      <li><strong>Heart and Great Vessels:</strong>
+        <ul>
+          <li>Right heart chambers not dilated</li>
+          <li>No signs of right heart strain</li>
+          <li>Aorta and SVC: Normal caliber</li>
+        </ul>
+      </li>
+
+      <li><strong>Mediastinum and Lymph Nodes:</strong>
+        <ul>
+          <li>No mediastinal or hilar lymphadenopathy</li>
+        </ul>
+      </li>
+
+      <li><strong>Chest Wall and Upper Abdomen:</strong>
+        <ul>
+          <li>No abnormal findings</li>
+        </ul>
+      </li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>No evidence of pulmonary thromboembolism</li>
+      <li>Normal pulmonary arterial anatomy</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ctpa')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>        </ul>
+      </details>
+
+      <details>
+        <summary class="sub">Abdomen</summary>
+        <ul>
+          <!-- CT ABDOMEN & PELVIS REPORT TEMPLATES --><!-- CT Abdomen Plain --><li onclick="toggleTemplate('ct-abdomen-plain')">CT Abdomen Plain</li>
+<div id="ct-abdomen-plain" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT ABDOMEN PLAIN REPORT</strong></div>
+    <div><em>Non-contrast study of abdomen and pelvis</em></div><br><ul>
+  <li><strong>Liver:</strong> Normal size, shape, and attenuation. No focal lesions.</li>
+  <li><strong>Gallbladder & Biliary tree:</strong> Normal. No stones or wall thickening. Intrahepatic ducts not dilated.</li>
+  <li><strong>Pancreas:</strong> Normal contour and attenuation. No calcifications or ductal dilation.</li>
+  <li><strong>Spleen:</strong> Normal size and attenuation.</li>
+  <li><strong>Adrenal glands:</strong> Normal morphology. No masses or calcifications.</li>
+  <li><strong>Kidneys:</strong> Normal size and shape. No stones, hydronephrosis, or masses.</li>
+  <li><strong>Ureters & Bladder:</strong> Not dilated. Bladder wall normal. No calculi.</li>
+  <li><strong>Bowel loops:</strong> Normal caliber. No obstruction or mass lesion.</li>
+  <li><strong>Vessels:</strong> Aorta and IVC appear normal. No aneurysm or thrombosis.</li>
+  <li><strong>Lymph nodes:</strong> No significant retroperitoneal or mesenteric lymphadenopathy.</li>
+  <li><strong>Bones:</strong> No lytic or sclerotic lesions.</li>
+</ul>
+
+<div><strong>IMPRESSION:</strong></div>
+<ol>
+  <li>Normal non-contrast CT study of the abdomen and pelvis.</li>
+</ol>
+
+  <button class="copy-btn" onclick="copyToClipboard('SECTION_ID')">
+  <i class="fas fa-copy"></i> Copy
+</button></div>
+</div><!-- CT KUB --><li onclick="toggleTemplate('ct-kub')">CT KUB</li>
+<div id="ct-kub" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT KUB REPORT</strong></div>
+    <div><em>Non-contrast study for urolithiasis</em></div><br><ul>
+  <li><strong>Kidneys:</strong> No calculi seen. Normal corticomedullary differentiation. No hydronephrosis.</li>
+  <li><strong>Ureters:</strong> Traced throughout. No obstructing calculus. No wall thickening.</li>
+  <li><strong>Bladder:</strong> Normal wall thickness. No intravesical calculi.</li>
+  <li><strong>Other Findings:</strong> Appendix, visualized bowel loops, and solid organs appear normal.</li>
+  <li><strong>Vascular:</strong> No aortic calcifications or aneurysmal dilation.</li>
+  <li><strong>Bony Structures:</strong> Vertebrae and pelvic bones appear unremarkable.</li>
+</ul>
+
+<div><strong>IMPRESSION:</strong></div>
+<ol>
+  <li>No evidence of urolithiasis or obstructive uropathy.</li>
+</ol>
+
+ <button class="copy-btn" onclick="copyToClipboard('SECTION_ID')">
+  <i class="fas fa-copy"></i> Copy
+</button> </div>
+</div><!-- CECT Abdomen --><li onclick="toggleTemplate('cect-abdomen')">CECT Abdomen</li>
+<div id="cect-abdomen" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CECT ABDOMEN REPORT</strong></div>
+    <div><em>Contrast-enhanced study of abdomen and pelvis</em></div><br><ul>
+  <li><strong>Liver:</strong> Homogeneous enhancement. No focal lesions. No intrahepatic biliary dilatation.</li>
+  <li><strong>Gallbladder & Biliary tree:</strong> Normal wall thickness. No cholelithiasis. CBD normal caliber.</li>
+  <li><strong>Pancreas:</strong> Normal enhancement pattern. No mass or ductal dilation. Peripancreatic fat planes preserved.</li>
+  <li><strong>Spleen:</strong> Normal size and homogeneous enhancement.</li>
+  <li><strong>Adrenal glands:</strong> Normal size and morphology. No enhancing lesions.</li>
+  <li><strong>Kidneys:</strong> Normal enhancement, excretion seen. No stones, masses, or hydronephrosis.</li>
+  <li><strong>Ureters & Bladder:</strong> Normal course. Bladder wall normal. No focal lesion.</li>
+  <li><strong>GI Tract:</strong> Normal caliber. No mural thickening or abnormal enhancement.</li>
+  <li><strong>Vascular:</strong> Aorta and branches including celiac axis, SMA, renal arteries appear patent. IVC and iliac veins are normal. No thrombosis or aneurysm.</li>
+  <li><strong>Lymph nodes:</strong> No significant retroperitoneal or mesenteric lymphadenopathy.</li>
+  <li><strong>Bones:</strong> No lytic or sclerotic lesions.</li>
+</ul>
+
+<div><strong>IMPRESSION:</strong></div>
+<ol>
+  <li>Normal contrast-enhanced CT study of the abdomen and pelvis.</li>
+</ol>
+
+  </div>
+</div>
+<!-- Triphasic CECT Liver Protocol --><li onclick="toggleTemplate('triphasic-cect-liver')">Triphasic CECT Liver</li>
+<div id="triphasic-cect-liver" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>TRIPHASIC CECT LIVER REPORT</strong></div>
+    <div><em>CT Abdomen with triphasic liver protocol – plain, arterial, portal venous, and delayed phases</em></div><br><ul>
+  <li><strong>Liver:</strong>
+    <ul>
+      <li>Size and morphology: Normal</li>
+      <li>Parenchyma: Homogeneous enhancement in all phases</li>
+      <li>Focal lesions: None seen</li>
+      <li>Vascular structures:
+        <ul>
+          <li>Hepatic artery: Patent</li>
+          <li>Portal vein: Normal caliber and contrast opacification</li>
+          <li>Hepatic veins: Normal</li>
+        </ul>
+      </li>
+      <li>Biliary radicles: Not dilated</li>
+      <li>Capsule: Smooth</li>
+    </ul>
+  </li>
+
+  <li><strong>Gallbladder & Biliary Tree:</strong> Normal distension, wall thickness, and no stones or pericholecystic fluid</li>
+  <li><strong>Pancreas:</strong> Normal size, contour, and enhancement; duct not dilated</li>
+  <li><strong>Spleen:</strong> Normal size and homogeneous enhancement</li>
+  <li><strong>Adrenal Glands:</strong> Normal morphology, no masses</li>
+  <li><strong>Kidneys & Ureters:</strong> Normal size, shape, enhancement; no stones or hydronephrosis</li>
+  <li><strong>Bowel:</strong> No dilatation or abnormal wall thickening</li>
+  <li><strong>Vasculature:</strong>
+    <ul>
+      <li>Abdominal aorta and major branches: Patent</li>
+      <li>IVC: Normal caliber and opacification</li>
+    </ul>
+  </li>
+  <li><strong>Lymph nodes:</strong> No significant retroperitoneal or mesenteric lymphadenopathy</li>
+  <li><strong>Peritoneum:</strong> No ascites or peritoneal thickening</li>
+</ul>
+
+<div><strong>IMPRESSION:</strong></div>
+<ol>
+  <li>Normal triphasic study of liver – no enhancing lesions seen</li>
+  <li>Hepatic and portal venous systems are normal</li>
+</ol>
+
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('triphasic-cect-liver')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div><!-- CECT Pancreas Protocol --><li onclick="toggleTemplate('cect-pancreas-protocol')">CECT Pancreatic Protocol</li>
+<div id="cect-pancreas-protocol" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CECT PANCREATIC PROTOCOL REPORT</strong></div>
+    <div><em>Pancreas-focused CT with arterial, pancreatic, and venous phases</em></div><br><ul>
+  <li><strong>Pancreas:</strong>
+    <ul>
+      <li>Size and contour: Normal</li>
+      <li>Enhancement: Uniform across all phases</li>
+      <li>Duct: Not dilated</li>
+      <li>No focal lesions or necrosis</li>
+      <li>Peripancreatic fat: Preserved</li>
+    </ul>
+  </li>
+
+  <li><strong>Liver, Gallbladder & Biliary Tree:</strong> Normal appearance, no biliary dilatation</li>
+  <li><strong>Spleen:</strong> Normal size and enhancement</li>
+  <li><strong>Adrenal Glands:</strong> Normal bilaterally</li>
+  <li><strong>Kidneys & Ureters:</strong> Normal size, position, and enhancement</li>
+  <li><strong>Bowel:</strong> No abnormal thickening or obstruction</li>
+  <li><strong>Vascular Structures:</strong>
+    <ul>
+      <li>Celiac axis, SMA, splenic vein, SMV, portal vein: Patent</li>
+      <li>Abdominal aorta & IVC: Normal</li>
+    </ul>
+  </li>
+  <li><strong>Lymph Nodes:</strong> No significant lymphadenopathy</li>
+  <li><strong>Peritoneum:</strong> No free fluid or fat stranding</li>
+</ul>
+
+<div><strong>IMPRESSION:</strong></div>
+<ol>
+  <li>Normal pancreatic protocol CT scan</li>
+  <li>No evidence of pancreatitis, mass lesion, or vascular invasion</li>
+</ol>
+
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('cect-pancreas-protocol')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div><!-- CECT Adrenal Protocol --><li onclick="toggleTemplate('cect-adrenal-protocol')">CECT Adrenal Protocol</li>
+<div id="cect-adrenal-protocol" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CECT ADRENAL PROTOCOL REPORT</strong></div>
+    <div><em>Adrenal-focused contrast-enhanced CT – plain, arterial, and venous phases</em></div><br><ul>
+  <li><strong>Adrenal Glands:</strong>
+    <ul>
+      <li>Right: Normal size and morphology</li>
+      <li>Left: Normal size and morphology</li>
+      <li>No nodules, masses, or calcifications</li>
+      <li>Preserved fat planes with adjacent structures</li>
+    </ul>
+  </li>
+
+  <li><strong>Liver & Biliary System:</strong> Normal enhancement, no focal lesions, bile ducts not dilated</li>
+  <li><strong>Pancreas:</strong> Normal morphology and enhancement</li>
+  <li><strong>Spleen:</strong> Homogeneous enhancement, normal size</li>
+  <li><strong>Kidneys:</strong> No stones, masses, or hydronephrosis</li>
+  <li><strong>Bowel:</strong> Normal wall thickness and caliber</li>
+  <li><strong>Vasculature:</strong>
+    <ul>
+      <li>Aorta, renal arteries, and adrenal veins: Patent</li>
+      <li>IVC: Normal caliber</li>
+    </ul>
+  </li>
+  <li><strong>Lymph Nodes:</strong> No significant lymphadenopathy</li>
+  <li><strong>Peritoneum:</strong> No fluid or abnormal enhancement</li>
+</ul>
+
+<div><strong>IMPRESSION:</strong></div>
+<ol>
+  <li>Normal CECT adrenal protocol study</li>
+  <li>No adrenal lesions detected</li>
+</ol>
+
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('cect-adrenal-protocol')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<!-- CECT Renal Protocol --><li onclick="toggleTemplate('cect-renal-protocol')">CECT Renal Protocol</li>
+<div id="cect-renal-protocol" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CECT RENAL PROTOCOL REPORT</strong></div>
+    <div><em>Contrast Enhanced CT Scan of Kidneys (Renal Protocol)</em></div><br><ul>
+  <li><strong>Technique:</strong> Non-contrast, corticomedullary (30–40s), nephrographic (80–100s), and excretory phases (3–5 min)</li>
+
+  <li><strong>Kidneys:</strong>
+    <ul>
+      <li>Size, shape, and position: Normal</li>
+      <li>Parenchymal enhancement: Symmetrical</li>
+      <li>Renal cortex and medulla: Preserved differentiation</li>
+      <li>Collecting system: No hydronephrosis or filling defects</li>
+      <li>Renal masses/cysts: None identified</li>
+    </ul>
+  </li>
+
+  <li><strong>Ureters:</strong>
+    <ul>
+      <li>Bilateral ureters traced till vesicoureteric junctions</li>
+      <li>No evidence of obstruction or calculi</li>
+    </ul>
+  </li>
+
+  <li><strong>Bladder:</strong> Well-distended, normal wall thickness, no intraluminal mass or calculus</li>
+
+  <li><strong>Adrenal Glands:</strong> Normal morphology and attenuation</li>
+
+  <li><strong>Liver, Gallbladder, Pancreas, Spleen:</strong> Normal size, attenuation, and enhancement</li>
+
+  <li><strong>Bowel:</strong> Unremarkable enhancement, no wall thickening or obstruction</li>
+
+  <li><strong>Vascular Structures:</strong>
+    <ul>
+      <li>Abdominal aorta and branches: Normal caliber, no aneurysm/dissection</li>
+      <li>Renal arteries:
+        <ul>
+          <li>Origin and course: Normal</li>
+          <li>No stenosis or beading</li>
+        </ul>
+      </li>
+      <li>Renal veins: Normal caliber and drainage</li>
+    </ul>
+  </li>
+
+  <li><strong>Lymph Nodes:</strong> No significant retroperitoneal lymphadenopathy</li>
+
+  <li><strong>Osseous Structures:</strong> No lytic/sclerotic lesions</li>
+</ul>
+
+<div><strong>IMPRESSION:</strong></div>
+<ol>
+  <li>Normal renal morphology and function</li>
+  <li>No obstructive uropathy or enhancing renal masses</li>
+  <li>Other abdominal structures within normal limits</li>
+</ol>
+
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('cect-renal-protocol')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div><!-- CT Renal Angiography --><li onclick="toggleTemplate('ct-renal-angio')">CT Renal Angiography</li>
+<div id="ct-renal-angio" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT RENAL ANGIOGRAPHY REPORT</strong></div>
+    <div><em>CT Angiographic Evaluation of Renal Arteries and Veins</em></div><br><ul>
+  <li><strong>Technique:</strong> Contrast-enhanced CT in arterial and venous phases with 3D reconstructions</li>
+
+  <li><strong>Renal Arteries:</strong>
+    <ul>
+      <li>Number and origin: Single/Multiple on right and left sides</li>
+      <li>Length and diameter:
+        <ul>
+          <li>Right: ___ mm length, ___ mm diameter</li>
+          <li>Left: ___ mm length, ___ mm diameter</li>
+        </ul>
+      </li>
+      <li>Branching pattern: Normal / Early branching noted at ___ mm from origin</li>
+      <li>Accessory renal arteries: Present/Absent</li>
+      <li>Stenosis, beading, aneurysms: Not identified</li>
+    </ul>
+  </li>
+
+  <li><strong>Renal Veins:</strong>
+    <ul>
+      <li>Length and diameter:
+        <ul>
+          <li>Right: ___ mm length, ___ mm diameter</li>
+          <li>Left: ___ mm length, ___ mm diameter</li>
+        </ul>
+      </li>
+      <li>Drainage pattern: Normal</li>
+      <li>Left renal vein crossing: Anterior to aorta / Retroaortic / Circumaortic variant</li>
+      <li>Thrombosis/Compression: Not seen</li>
+    </ul>
+  </li>
+
+  <li><strong>Kidneys:</strong> Normal size and enhancement bilaterally</li>
+  <li><strong>Adrenals, Liver, Pancreas, Spleen:</strong> Within normal limits</li>
+  <li><strong>Bowel and Retroperitoneum:</strong> Unremarkable</li>
+</ul>
+
+<div><strong>IMPRESSION:</strong></div>
+<ol>
+  <li>Normal renal vascular anatomy</li>
+  <li>No evidence of arterial stenosis or venous anomalies</li>
+  <li>Suitable for renal transplantation (if applicable)</li>
+</ol>
+
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ct-renal-angio')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<!-- CT Abdominal Angiography -->
+<li onclick="toggleTemplate('ct-abdominal-angio')">CT Abdominal Angiography</li>
+<div id="ct-abdominal-angio" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT ABDOMINAL ANGIOGRAPHY REPORT</strong></div>
+    <div><em>Triphasic contrast-enhanced CT of the abdomen focused on arterial phase imaging</em></div><br>
+
+    <ul>
+      <li><strong>Aorta:</strong>
+        <ul>
+          <li>Normal course and caliber</li>
+          <li>No aneurysm, dissection, or mural thrombus</li>
+          <li>Wall calcifications: ___</li>
+        </ul>
+      </li>
+
+      <li><strong>Major Branches:</strong>
+        <ul>
+          <li>Celiac axis: Patent, normal origin and branching</li>
+          <li>SMA: Normal origin, caliber and course</li>
+          <li>IMA: ___</li>
+          <li>Renal arteries: Origin, caliber, symmetry, any accessory arteries or early branching</li>
+          <li>Common iliac arteries: ___</li>
+        </ul>
+      </li>
+
+      <li><strong>Venous Anatomy (from venous phase):</strong>
+        <ul>
+          <li>IVC: ___</li>
+          <li>Renal veins: Normal insertion and caliber</li>
+          <li>Hepatic veins: ___</li>
+          <li>Any evidence of compression, thrombosis, or collaterals</li>
+        </ul>
+      </li>
+
+      <li><strong>Abdominal Organs:</strong>
+        <ul>
+          <li>Liver: Normal size, attenuation, and enhancement pattern</li>
+          <li>Spleen: ___</li>
+          <li>Pancreas: ___</li>
+          <li>Adrenal glands: ___</li>
+          <li>Kidneys: Normal size, outline, and cortical enhancement</li>
+        </ul>
+      </li>
+
+      <li><strong>Other Findings:</strong>
+        <ul>
+          <li>Bowel loops: ___</li>
+          <li>Lymph nodes: ___</li>
+          <li>Osseous structures: ___</li>
+        </ul>
+      </li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal abdominal aortic and major visceral arterial anatomy</li>
+      <li>No aneurysm, stenosis, or vascular abnormality identified</li>
+      <li>Normal enhancement of abdominal solid organs</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ct-abdominal-angio')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- CT Aortogram -->
+<li onclick="toggleTemplate('ct-aortogram')">CT Aortogram</li>
+<div id="ct-aortogram" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>CT AORTOGRAM REPORT</strong></div>
+    <div><em>Contrast-enhanced CT aortogram covering thoracic and abdominal aorta</em></div><br>
+
+    <ul>
+      <li><strong>Aortic Root and Ascending Aorta:</strong>
+        <ul>
+          <li>Normal caliber and course</li>
+          <li>No evidence of dissection, aneurysm, or calcification</li>
+        </ul>
+      </li>
+
+      <li><strong>Aortic Arch and Branches:</strong>
+        <ul>
+          <li>Brachiocephalic, left common carotid, and left subclavian arteries: Patent, no significant narrowing</li>
+          <li>Arch configuration: Normal / Aberrant</li>
+        </ul>
+      </li>
+
+      <li><strong>Descending Thoracic Aorta:</strong>
+        <ul>
+          <li>Normal caliber, no aneurysm or dissection</li>
+        </ul>
+      </li>
+
+      <li><strong>Abdominal Aorta:</strong>
+        <ul>
+          <li>Normal caliber and course</li>
+          <li>Celiac axis, SMA, IMA: Normal origin and opacification</li>
+          <li>Renal arteries: Describe origin, caliber, any accessory or early branching</li>
+          <li>Common iliac arteries: ___</li>
+        </ul>
+      </li>
+
+      <li><strong>Venous Phase (if acquired):</strong>
+        <ul>
+          <li>IVC, renal veins, iliac veins: ___</li>
+        </ul>
+      </li>
+
+      <li><strong>Other Organs (liver, spleen, pancreas, kidneys, adrenals):</strong> Describe briefly</li>
+    </ul>
+
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal CT angiographic evaluation of the thoracoabdominal aorta and major branches</li>
+      <li>No dissection, aneurysm, or occlusion noted</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('ct-aortogram')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+        </ul>
+      </details>
+    </ul>
+  </details>
+
+  <!-- MRI Section -->
+  <details class="dropdown mri">
+    <summary><i class="fas fa-brain"></i>MRI</summary>
+    <ul>
+      <details>
+        <summary class="sub">Brain</summary>
+        <ul>
+        <!-- MRI Brain -->
+<li onclick="toggleTemplate('mri-brain')">MRI Brain</li>
+<div id="mri-brain" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI BRAIN REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Brain</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Multiplanar, multisequence imaging including T1, T2, FLAIR, DWI/ADC, and post-contrast T1-weighted sequences</li>
+      
+      <li><strong>Parenchyma:</strong>
+        <ul>
+          <li>Normal gray-white matter differentiation</li>
+          <li>No focal parenchymal lesions</li>
+          <li>No restricted diffusion to suggest acute ischemia</li>
+          <li>No abnormal parenchymal enhancement</li>
+        </ul>
+      </li>
+      
+      <li><strong>Ventricles and CSF Spaces:</strong>
+        <ul>
+          <li>Normal ventricular size and configuration</li>
+          <li>No hydrocephalus</li>
+          <li>Normal sulcal pattern for age</li>
+          <li>No extra-axial collections</li>
+        </ul>
+      </li>
+      
+      <li><strong>Basal Ganglia and Thalami:</strong>
+        <ul>
+          <li>Normal signal characteristics</li>
+          <li>No evidence of hemorrhage or calcification</li>
+        </ul>
+      </li>
+      
+      <li><strong>Brainstem and Cerebellum:</strong>
+        <ul>
+          <li>Normal morphology and signal characteristics</li>
+          <li>No focal lesions</li>
+          <li>Normal cerebellar folia pattern</li>
+        </ul>
+      </li>
+      
+      <li><strong>Sella and Suprasellar Region:</strong>
+        <ul>
+          <li>Normal pituitary gland size and signal</li>
+          <li>Intact pituitary stalk</li>
+          <li>Normal optic chiasm</li>
+        </ul>
+      </li>
+      
+      <li><strong>Vascular Structures:</strong>
+        <ul>
+          <li>Normal flow voids in major intracranial arteries</li>
+          <li>No vascular malformations</li>
+        </ul>
+      </li>
+      
+      <li><strong>Sinuses and Mastoids:</strong>
+        <ul>
+          <li>Clear paranasal sinuses</li>
+          <li>Aerated mastoid air cells</li>
+        </ul>
+      </li>
+      
+      <li><strong>Orbits:</strong>
+        <ul>
+          <li>Normal appearing globes and optic nerves</li>
+          <li>No orbital masses</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the brain parenchyma</li>
+      <li>No evidence of acute infarct, hemorrhage, or mass lesion</li>
+      <li>Normal ventricular system and CSF spaces</li>
+      <li>No abnormal contrast enhancement</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-brain')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- MRA/MRV -->
+<li onclick="toggleTemplate('mra-mrv')">MRA/MRV</li>
+<div id="mra-mrv" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRA/MRV REPORT</strong></div>
+    <div><em>Magnetic Resonance Angiography/Venography of Brain</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> 3D time-of-flight MRA and 2D/3D phase contrast MRV</li>
+      
+      <li><strong>Arterial System (MRA):</strong>
+        <ul>
+          <li>Normal course and caliber of intracranial arteries</li>
+          <li>Complete circle of Willis present</li>
+          <li>No aneurysms, stenoses, or vascular malformations</li>
+          <li>Normal branching pattern of ACA, MCA, and PCA</li>
+        </ul>
+      </li>
+      
+      <li><strong>Venous System (MRV):</strong>
+        <ul>
+          <li>Patent dural venous sinuses</li>
+          <li>Normal superior sagittal, straight, transverse, and sigmoid sinuses</li>
+          <li>Normal internal cerebral veins and vein of Galen</li>
+          <li>No venous thrombosis or stenosis</li>
+        </ul>
+      </li>
+      
+      <li><strong>Vascular Variants:</strong>
+        <ul>
+          <li>No significant anatomical variants noted</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRA of intracranial arteries</li>
+      <li>Normal MRV of dural venous sinuses and cerebral veins</li>
+      <li>No evidence of aneurysm, vascular malformation, or venous thrombosis</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mra-mrv')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+
+<!-- MRI Pituitary Protocol -->
+<li onclick="toggleTemplate('mri-pituitary')">MRI Pituitary Protocol</li>
+<div id="mri-pituitary" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI PITUITARY PROTOCOL REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Sella Turcica with Dynamic Contrast</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> High-resolution coronal and sagittal T1/T2 weighted images pre and post contrast, with dynamic imaging</li>
+      
+      <li><strong>Pituitary Gland:</strong>
+        <ul>
+          <li>Normal size and morphology (height: __ mm)</li>
+          <li>Normal convexity of upper margin</li>
+          <li>Normal posterior pituitary bright spot</li>
+          <li>Homogeneous contrast enhancement</li>
+          <li>No focal lesions or microadenomas</li>
+        </ul>
+      </li>
+      
+      <li><strong>Pituitary Stalk:</strong>
+        <ul>
+          <li>Normal midline position</li>
+          <li>Normal thickness (__ mm)</li>
+          <li>No deviation or thickening</li>
+        </ul>
+      </li>
+      
+      <li><strong>Suprasellar Region:</strong>
+        <ul>
+          <li>Normal optic chiasm</li>
+          <li>No suprasellar masses</li>
+          <li>Normal infundibulum</li>
+        </ul>
+      </li>
+      
+      <li><strong>Cavernous Sinuses:</strong>
+        <ul>
+          <li>Normal appearance</li>
+          <li>Normal flow voids of cavernous ICA</li>
+          <li>No cranial nerve enlargement</li>
+        </ul>
+      </li>
+      
+      <li><strong>Bony Structures:</strong>
+        <ul>
+          <li>Normal sella turcica configuration</li>
+          <li>No bony erosion or thinning</li>
+        </ul>
+      </li>
+      
+      <li><strong>Adjacent Brain:</strong>
+        <ul>
+          <li>Normal hypothalamus</li>
+          <li>Normal temporal lobes</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the pituitary gland and sella turcica</li>
+      <li>No evidence of pituitary adenoma or other sellar/suprasellar mass</li>
+      <li>Normal contrast enhancement pattern</li>
+      <li>Intact posterior pituitary bright spot</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-pituitary')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+          
+        
+        </ul>
+      </details>
+
+      <details>
+        <summary class="sub">MRCP</summary>
+        <ul>
+          <!-- MRCP -->
+<li onclick="toggleTemplate('mrcp')">MRCP</li>
+<div id="mrcp" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRCP REPORT</strong></div>
+    <div><em>Magnetic Resonance Cholangiopancreatography</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Heavily T2-weighted sequences (2D/3D), coronal/sagittal reformats, with/without secretin stimulation</li>
+      
+      <li><strong>Biliary System:</strong>
+        <ul>
+          <li><strong>Intrahepatic ducts:</strong> Normal caliber, no dilation or strictures</li>
+          <li><strong>Common hepatic duct (CHD):</strong> Normal diameter (__ mm)</li>
+          <li><strong>Common bile duct (CBD):</strong> Normal diameter (__ mm), no filling defects</li>
+          <li><strong>Cystic duct:</strong> Patent, no obstruction</li>
+          <li><strong>Gallbladder:</strong> Normal size, no stones/sludge, wall thickness &lt;3 mm</li>
+        </ul>
+      </li>
+      
+      <li><strong>Pancreatic Duct:</strong>
+        <ul>
+          <li><strong>Main pancreatic duct (MPD):</strong> Normal caliber (head: __ mm, body: __ mm, tail: __ mm)</li>
+          <li><strong>Side branches:</strong> No dilation</li>
+          <li><strong>Santorinicele/pancreas divisum:</strong> Not present</li>
+        </ul>
+      </li>
+      
+      <li><strong>Ampulla of Vater:</strong>
+        <ul>
+          <li>Normal appearance, no obstruction</li>
+        </ul>
+      </li>
+      
+      <li><strong>Pancreas:</strong>
+        <ul>
+          <li>Normal size and signal intensity</li>
+          <li>No parenchymal lesions (e.g., masses, cysts, pancreatitis)</li>
+        </ul>
+      </li>
+      
+      <li><strong>Liver:</strong>
+        <ul>
+          <li>Normal morphology, no focal lesions</li>
+          <li>No biliary ductal dilation</li>
+        </ul>
+      </li>
+      
+      <li><strong>Fluid Collections:</strong>
+        <ul>
+          <li>No pericholecystic, perihepatic, or peripancreatic fluid</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRCP appearance of the biliary and pancreatic ductal systems</li>
+      <li>No evidence of choledocholithiasis, strictures, or ductal dilation</li>
+      <li>Normal gallbladder and pancreas</li>
+      <li>No obstructive pathology identified</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mrcp')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+        
+        </ul>
+      </details>
+
+      <details>
+        <summary class="sub">Spine</summary>
+        <ul>
+          <!-- MRI C-Spine -->
+<li onclick="toggleTemplate('mri-cspine')">MRI C-Spine</li>
+<div id="mri-cspine" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI CERVICAL SPINE REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Cervical Spine</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Sagittal T1, T2, STIR; axial T2/T2*; post-contrast T1 if performed</li>
+      
+      <li><strong>Alignment:</strong>
+        <ul>
+          <li>Normal cervical lordosis</li>
+          <li>No spondylolisthesis or subluxation</li>
+        </ul>
+      </li>
+      
+      <li><strong>Vertebral Bodies:</strong>
+        <ul>
+          <li>Normal height and marrow signal</li>
+          <li>No compression fractures or bone lesions</li>
+        </ul>
+      </li>
+      
+      <li><strong>Intervertebral Discs:</strong>
+        <ul>
+          <li>Normal hydration and height</li>
+          <li>No herniation, protrusion, or extrusion</li>
+        </ul>
+      </li>
+      
+      <li><strong>Spinal Cord:</strong>
+        <ul>
+          <li>Normal caliber and signal</li>
+          <li>No myelomalacia or syrinx</li>
+        </ul>
+      </li>
+      
+      <li><strong>Spinal Canal:</strong>
+        <ul>
+          <li>No central stenosis</li>
+          <li>AP diameter ≥10 mm at all levels</li>
+        </ul>
+      </li>
+      
+      <li><strong>Neural Foramina:</strong>
+        <ul>
+          <li>Patent bilaterally</li>
+          <li>No foraminal narrowing</li>
+        </ul>
+      </li>
+      
+      <li><strong>Facet Joints:</strong>
+        <ul>
+          <li>No hypertrophy or degenerative changes</li>
+        </ul>
+      </li>
+      
+      <li><strong>Soft Tissues:</strong>
+        <ul>
+          <li>Normal prevertebral and paraspinal soft tissues</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the cervical spine</li>
+      <li>No disc herniation, spinal stenosis, or cord compression</li>
+      <li>Maintained vertebral body heights and alignment</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-cspine')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<!-- MRI D-Spine -->
+<li onclick="toggleTemplate('mri-dspine')">MRI D-Spine</li>
+<div id="mri-dspine" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI THORACIC SPINE REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Thoracic Spine</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Sagittal T1, T2, STIR; axial T2/T2*; post-contrast T1 if performed</li>
+      
+      <li><strong>Alignment:</strong>
+        <ul>
+          <li>Normal thoracic kyphosis</li>
+          <li>No scoliosis or listhesis</li>
+        </ul>
+      </li>
+      
+      <li><strong>Vertebral Bodies:</strong>
+        <ul>
+          <li>Normal height and marrow signal</li>
+          <li>No compression fractures or metastatic lesions</li>
+        </ul>
+      </li>
+      
+      <li><strong>Intervertebral Discs:</strong>
+        <ul>
+          <li>Normal height and signal</li>
+          <li>No herniation or degenerative changes</li>
+        </ul>
+      </li>
+      
+      <li><strong>Spinal Cord:</strong>
+        <ul>
+          <li>Normal caliber and signal</li>
+          <li>No cord compression or myelopathy</li>
+        </ul>
+      </li>
+      
+      <li><strong>Spinal Canal:</strong>
+        <ul>
+          <li>No central stenosis</li>
+          <li>AP diameter ≥10 mm at all levels</li>
+        </ul>
+      </li>
+      
+      <li><strong>Neural Foramina:</strong>
+        <ul>
+          <li>Patent bilaterally</li>
+        </ul>
+      </li>
+      
+      <li><strong>Costovertebral Joints:</strong>
+        <ul>
+          <li>Normal alignment</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the thoracic spine</li>
+      <li>No disc herniation, spinal stenosis, or cord compression</li>
+      <li>No evidence of fracture or metastatic disease</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-dspine')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+<!-- MRI L-Spine -->
+<li onclick="toggleTemplate('mri-lspine')">MRI L-Spine</li>
+<div id="mri-lspine" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI LUMBAR SPINE REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Lumbar Spine</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Sagittal T1, T2, STIR; axial T2/T2*; post-contrast T1 if performed</li>
+      
+      <li><strong>Alignment:</strong>
+        <ul>
+          <li>Normal lumbar lordosis</li>
+          <li>No spondylolisthesis</li>
+        </ul>
+      </li>
+      
+      <li><strong>Vertebral Bodies:</strong>
+        <ul>
+          <li>Normal height and marrow signal</li>
+          <li>No compression fractures or Modic changes</li>
+        </ul>
+      </li>
+      
+      <li><strong>Intervertebral Discs:</strong>
+        <ul>
+          <li>Normal hydration and height</li>
+          <li>No herniation, protrusion, or extrusion</li>
+        </ul>
+      </li>
+      
+      <li><strong>Spinal Canal:</strong>
+        <ul>
+          <li>No central stenosis</li>
+          <li>AP diameter ≥12 mm at all levels</li>
+        </ul>
+      </li>
+      
+      <li><strong>Neural Foramina:</strong>
+        <ul>
+          <li>Patent bilaterally</li>
+          <li>No nerve root compression</li>
+        </ul>
+      </li>
+      
+      <li><strong>Facet Joints:</strong>
+        <ul>
+          <li>No hypertrophy or degenerative changes</li>
+        </ul>
+      </li>
+      
+      <li><strong>Conus Medullaris:</strong>
+        <ul>
+          <li>Normal position (terminates at L1-L2)</li>
+          <li>No tethering or syrinx</li>
+        </ul>
+      </li>
+      
+      <li><strong>Pars Interarticularis:</strong>
+        <ul>
+          <li>Intact bilaterally</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the lumbar spine</li>
+      <li>No disc herniation, spinal stenosis, or nerve root compression</li>
+      <li>No spondylolysis or spondylolisthesis</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-lspine')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+         
+        </ul>
+      </details>
+
+      
+      <details>
+        <summary class="sub">Shoulder</summary>
+        <ul>
+          <!-- MRI Shoulder -->
+<li onclick="toggleTemplate('mri-shoulder')">MRI Shoulder</li>
+<div id="mri-shoulder" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI SHOULDER REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Shoulder</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Coronal/sagittal/axial T1, T2, PD/FS; ABER position if performed</li>
+      
+      <li><strong>Rotator Cuff:</strong>
+        <ul>
+          <li><strong>Supraspinatus:</strong> Intact, no tear</li>
+          <li><strong>Infraspinatus:</strong> Intact</li>
+          <li><strong>Teres minor:</strong> Normal</li>
+          <li><strong>Subscapularis:</strong> Intact</li>
+        </ul>
+      </li>
+      
+      <li><strong>Labrum:</strong>
+        <ul>
+          <li>Normal configuration</li>
+          <li>No SLAP tear or Bankart lesion</li>
+        </ul>
+      </li>
+      
+      <li><strong>Biceps Tendon:</strong>
+        <ul>
+          <li>Normal course within bicipital groove</li>
+          <li>No tendinosis or tear</li>
+        </ul>
+      </li>
+      
+      <li><strong>AC Joint:</strong>
+        <ul>
+          <li>No degenerative changes</li>
+        </ul>
+      </li>
+      
+      <li><strong>Bones:</strong>
+        <ul>
+          <li>No fractures or Hill-Sachs lesion</li>
+        </ul>
+      </li>
+      
+      <li><strong>Joint Effusion:</strong>
+        <ul>
+          <li>No significant effusion</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the shoulder</li>
+      <li>No rotator cuff or labral tear</li>
+      <li>No evidence of impingement</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-shoulder')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+        </ul>
+      </details>
+      
+      <details>
+        <summary class="sub">Elbow</summary>
+        <ul>
+         <!-- MRI Elbow -->
+<li onclick="toggleTemplate('mri-elbow')">MRI Elbow</li>
+<div id="mri-elbow" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI ELBOW REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Elbow</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Coronal/sagittal/axial T1, T2, PD/FS</li>
+      
+      <li><strong>Ligaments:</strong>
+        <ul>
+          <li><strong>UCL:</strong> Intact</li>
+          <li><strong>RCL:</strong> Intact</li>
+        </ul>
+      </li>
+      
+      <li><strong>Tendons:</strong>
+        <ul>
+          <li><strong>Common extensor:</strong> Normal</li>
+          <li><strong>Common flexor:</strong> Normal</li>
+          <li><strong>Biceps tendon:</strong> Intact</li>
+        </ul>
+      </li>
+      
+      <li><strong>Bones:</strong>
+        <ul>
+          <li>No fractures or osteochondral defects</li>
+        </ul>
+      </li>
+      
+      <li><strong>Nerves:</strong>
+        <ul>
+          <li>Ulnar nerve in normal position</li>
+        </ul>
+      </li>
+      
+      <li><strong>Joint Effusion:</strong>
+        <ul>
+          <li>No significant effusion</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the elbow</li>
+      <li>No ligamentous or tendinous pathology</li>
+      <li>No evidence of osteochondritis dissecans</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-elbow')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+        </ul>
+      </details>
+      
+       <details>
+        <summary class="sub">Hip</summary>
+        <ul>
+          <!-- MRI Hip -->
+<li onclick="toggleTemplate('mri-hip')">MRI Hip</li>
+<div id="mri-hip" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI HIP REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Hip</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Coronal/sagittal/axial T1, T2, STIR; post-contrast if performed</li>
+      
+      <li><strong>Bones:</strong>
+        <ul>
+          <li>No fractures or avascular necrosis</li>
+          <li>No bone marrow edema</li>
+        </ul>
+      </li>
+      
+      <li><strong>Articular Cartilage:</strong>
+        <ul>
+          <li>Normal thickness, no defects</li>
+        </ul>
+      </li>
+      
+      <li><strong>Labrum:</strong>
+        <ul>
+          <li>Intact, no tear</li>
+        </ul>
+      </li>
+      
+      <li><strong>Ligaments/Tendons:</strong>
+        <ul>
+          <li>No tendinosis or tear</li>
+        </ul>
+      </li>
+      
+      <li><strong>Joint Effusion:</strong>
+        <ul>
+          <li>No significant effusion</li>
+        </ul>
+      </li>
+      
+      <li><strong>Bursae:</strong>
+        <ul>
+          <li>No trochanteric bursitis</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the hip</li>
+      <li>No evidence of labral tear or AVN</li>
+      <li>No significant joint pathology</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-hip')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+        </ul>
+      </details>
+      <details>
+        <summary class="sub">Ankle</summary></summary>
+        <ul>
+          
+          <!-- MRI Ankle -->
+<li onclick="toggleTemplate('mri-ankle')">MRI Ankle</li>
+<div id="mri-ankle" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI ANKLE REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Ankle</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Sagittal/coronal/axial T1, T2, PD/FS</li>
+      
+      <li><strong>Ligaments:</strong>
+        <ul>
+          <li><strong>ATFL:</strong> Intact</li>
+          <li><strong>CFL:</strong> Intact</li>
+          <li><strong>PTFL:</strong> Intact</li>
+          <li><strong>Deltoid:</strong> Intact</li>
+        </ul>
+      </li>
+      
+      <li><strong>Tendons:</strong>
+        <ul>
+          <li><strong>Achilles:</strong> Normal thickness/signal</li>
+          <li><strong>Peroneal:</strong> Normal</li>
+          <li><strong>Tibialis posterior:</strong> Normal</li>
+        </ul>
+      </li>
+      
+      <li><strong>Bones:</strong>
+        <ul>
+          <li>No fractures or osteochondral lesions</li>
+        </ul>
+      </li>
+      
+      <li><strong>Joint Effusion:</strong>
+        <ul>
+          <li>No significant effusion</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the ankle</li>
+      <li>No ligamentous or tendinous tears</li>
+      <li>No evidence of osteochondral injury</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-ankle')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+        </ul>
+      </details>
+
+      <details>
+        <summary class="sub">Knee</summary>
+        <ul>
+          <!-- MRI Knee -->
+<li onclick="toggleTemplate('mri-knee')">MRI Knee</li>
+<div id="mri-knee" class="template-container hidden">
+  <div class="template-content">
+    <div><strong>MRI KNEE REPORT</strong></div>
+    <div><em>Magnetic Resonance Imaging of Knee</em></div><br>
+    
+    <ul>
+      <li><strong>Technique:</strong> Sagittal/coronal/axial T1, T2, PD/FS; STIR sequences</li>
+      
+      <li><strong>Meniscus:</strong>
+        <ul>
+          <li><strong>Medial meniscus:</strong> Intact, no tear</li>
+          <li><strong>Lateral meniscus:</strong> Intact, no tear</li>
+        </ul>
+      </li>
+      
+      <li><strong>Ligaments:</strong>
+        <ul>
+          <li><strong>ACL:</strong> Intact, normal orientation</li>
+          <li><strong>PCL:</strong> Intact</li>
+          <li><strong>MCL:</strong> No thickening or tear</li>
+          <li><strong>LCL:</strong> Normal appearance</li>
+        </ul>
+      </li>
+      
+      <li><strong>Articular Cartilage:</strong>
+        <ul>
+          <li>Normal thickness, no focal defects</li>
+          <li>No osteochondral lesions</li>
+        </ul>
+      </li>
+      
+      <li><strong>Bones:</strong>
+        <ul>
+          <li>No fractures or bone marrow edema</li>
+          <li>Normal alignment</li>
+        </ul>
+      </li>
+      
+      <li><strong>Quadriceps/Patellar Tendon:</strong>
+        <ul>
+          <li>Normal thickness and signal</li>
+        </ul>
+      </li>
+      
+      <li><strong>Joint Effusion:</strong>
+        <ul>
+          <li>No significant effusion</li>
+        </ul>
+      </li>
+      
+      <li><strong>Bursae:</strong>
+        <ul>
+          <li>No bursitis</li>
+        </ul>
+      </li>
+    </ul>
+    
+    <div><strong>IMPRESSION:</strong></div>
+    <ol>
+      <li>Normal MRI appearance of the knee joint</li>
+      <li>No meniscal or ligamentous tears</li>
+      <li>No evidence of osteoarthritis or chondral defects.</li>
+    </ol>
+  </div>
+  <button class="copy-btn" onclick="copyToClipboard('mri-knee')">
+    <i class="fas fa-copy"></i> Copy
+  </button>
+</div>
+        </ul>
+      </details>
+    </ul>
+  </details>
+<script>
+  // Toggle template visibility
+  function toggleTemplate(id) {
+    const template = document.getElementById(id);
+    template.style.display = template.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Copy template to clipboard
+  function copyToClipboard(id) {
+    const templateDiv = document.querySelector(`#${id} .template-content`);
+    const range = document.createRange();
+    range.selectNode(templateDiv);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    
+    const notification = document.getElementById('copyNotification');
+    notification.style.display = 'block';
+    setTimeout(() => {
+      notification.style.display = 'none';
+    }, 2000);
+  }
+</script><script>
+  // Auto-collapse submenus when a main modality is closed
+  const mainModalityMenus = document.querySelectorAll("details.dropdown");
+
+  mainModalityMenus.forEach(main => {
+    main.addEventListener("toggle", () => {
+      if (!main.open) {
+        const submenus = main.querySelectorAll("details");
+        submenus.forEach(sub => sub.removeAttribute("open"));
+      }
+    });
+  });
+
+// Enhanced search functionality
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById('searchInput');
+  
+  searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase().trim();
+    const allMainCategories = document.querySelectorAll('.dropdown > summary');
+    const allSubCategories = document.querySelectorAll('.dropdown details > summary.sub');
+    const allTemplateItems = document.querySelectorAll('.dropdown li[onclick^="toggleTemplate"]');
+    
+    // Reset all first
+    allMainCategories.forEach(item => {
+      item.classList.remove('highlight');
+      item.closest('.dropdown').open = false;
+    });
+    allSubCategories.forEach(item => {
+      item.classList.remove('highlight');
+      item.closest('details').open = false;
+    });
+    allTemplateItems.forEach(item => {
+      item.classList.remove('hidden');
+      item.classList.remove('highlight');
+    });
+
+    if (searchTerm.length < 2) {
+      return; // Don't search for very short terms
+    }
+
+    // Search main categories (X-Ray, Ultrasound, etc.)
+    allMainCategories.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      if (text.includes(searchTerm)) {
+        item.classList.add('highlight');
+        item.closest('.dropdown').open = true;
+      }
+    });
+
+    // Search sub-categories (Chest X-ray, Abdomen, etc.)
+    allSubCategories.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      if (text.includes(searchTerm)) {
+        item.classList.add('highlight');
+        item.closest('details').open = true;
+        // Open all parent dropdowns
+        let parent = item.closest('.dropdown');
+        if (parent) parent.open = true;
+      }
+    });
+
+    // Search template items (PA View, Erect, etc.)
+    allTemplateItems.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      if (text.includes(searchTerm)) {
+        item.classList.add('highlight');
+        // Open all parent sections
+        let parent = item.closest('details');
+        while (parent) {
+          parent.open = true;
+          parent = parent.parentElement.closest('details');
+        }
+        // Also open the main dropdown
+        const mainDropdown = item.closest('.dropdown');
+        if (mainDropdown) mainDropdown.open = true;
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  });
+});
+// Expand/Collapse functionality
+document.addEventListener("DOMContentLoaded", () => {
+  const expandAllBtn = document.getElementById('expandAllBtn');
+  const collapseAllBtn = document.getElementById('collapseAllBtn');
+  const allDropdowns = document.querySelectorAll('.dropdown, .dropdown details');
+
+  expandAllBtn.addEventListener('click', () => {
+    allDropdowns.forEach(dropdown => {
+      dropdown.open = true;
+    });
+  });
+
+  collapseAllBtn.addEventListener('click', () => {
+    allDropdowns.forEach(dropdown => {
+      dropdown.open = false;
+    });
+  });
+});
+// Template management system (KEEP THIS)
+let customTemplates = JSON.parse(localStorage.getItem('customTemplates')) || {};
+
+// Toggle edit mode (KEEP THIS)
+function toggleEditMode(templateId) {
+  const template = document.getElementById(templateId);
+  const content = template.querySelector('.template-content');
+  const editBtn = template.querySelector('.edit-btn');
+  const saveBtn = template.querySelector('.save-btn');
+  const resetBtn = template.querySelector('.reset-btn');
+
+  template.classList.toggle('edit-mode');
+  content.contentEditable = template.classList.contains('edit-mode');
+  
+  editBtn.classList.toggle('hidden');
+  saveBtn.classList.toggle('hidden');
+  resetBtn.classList.toggle('hidden');
+  
+  if (!customTemplates[templateId]?.original) {
+    customTemplates[templateId] = customTemplates[templateId] || {};
+    customTemplates[templateId].original = content.innerHTML;
+    localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
+  }
+}
+
+// Save custom template (KEEP THIS)
+function saveTemplate(templateId) {
+  const template = document.getElementById(templateId);
+  const content = template.querySelector('.template-content');
+  
+  customTemplates[templateId] = customTemplates[templateId] || {};
+  customTemplates[templateId].custom = content.innerHTML;
+  localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
+  
+  toggleEditMode(templateId);
+  showNotification('Template saved successfully!');
+}
+
+// Reset to original template (KEEP THIS)
+function resetTemplate(templateId) {
+  const template = document.getElementById(templateId);
+  const content = template.querySelector('.template-content');
+  
+  if (confirm('Revert to original template? Your custom changes will be lost.')) {
+    if (customTemplates[templateId]?.original) {
+      content.innerHTML = customTemplates[templateId].original;
+      delete customTemplates[templateId].custom;
+      localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
+    }
+    toggleEditMode(templateId);
+  }
+}
+// REPLACE your current DOMContentLoaded code with this optimized version:
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize buttons for all templates
+  document.querySelectorAll('.template-container').forEach(template => {
+    const id = template.id;
+    if (!template.querySelector('.template-actions')) {
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'template-actions';
+      actionsDiv.innerHTML = `
+        <button class="edit-btn" onclick="toggleEditMode('${id}')">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <button class="save-btn hidden" onclick="saveTemplate('${id}')">
+          <i class="fas fa-save"></i> Save
+        </button>
+        <button class="reset-btn hidden" onclick="resetTemplate('${id}')">
+          <i class="fas fa-undo"></i> Original
+        </button>
+        <button class="compare-btn" onclick="showOriginalTemplate('${id}')">
+          <i class="fas fa-columns"></i> Compare
+        </button>
+      `;
+      template.appendChild(actionsDiv);
+    }
+  });
+
+  // Load any custom templates
+  Object.keys(customTemplates).forEach(templateId => {
+    const template = document.getElementById(templateId);
+    if (template && customTemplates[templateId]?.custom) {
+      const content = template.querySelector('.template-content');
+      if (content) content.innerHTML = customTemplates[templateId].custom;
+    }
+  });
+
+  // Keep your existing functionality
+  const xraySections = document.querySelectorAll(".xray details > details");
+  xraySections.forEach((section) => {
+    section.addEventListener("toggle", () => {
+      if (section.open) {
+        xraySections.forEach((other) => {
+          if (other !== section) other.removeAttribute("open");
+        });
+      }
+    });
+  });
+});
+
+// Add these functions to your existing script
+function showOriginalTemplate(templateId) {
+  const template = document.getElementById(templateId);
+  const originalContent = customTemplates[templateId]?.original || template.querySelector('.template-content').innerHTML;
+  const editedContent = template.querySelector('.template-content').innerHTML;
+  
+  document.getElementById('originalTemplateContent').innerHTML = originalContent;
+  document.getElementById('editedTemplateContent').innerHTML = editedContent;
+  document.getElementById('compareModal').style.display = 'block';
+}
+
+function closeCompareModal() {
+  document.getElementById('compareModal').style.display = 'none';
+}
+
+// Close modal when clicking outside content
+window.onclick = function(event) {
+  const modal = document.getElementById('compareModal');
+  if (event.target == modal) {
+    closeCompareModal();
+  }
+}
+</script>
+<!-- Copy Notification -->
+<div id="copyNotification" class="copy-notification">
+  <i class="fas fa-check-circle"></i> Template copied to clipboard!
+</div>
+
+<!-- Compare Modal -->
+<div id="compareModal" class="compare-modal">
+  <div class="compare-content">
+    <span class="close-compare" onclick="closeCompareModal()">&times;</span>
+    <h3>Compare Templates</h3>
+    <div class="compare-container">
+      <div class="compare-original">
+        <h4>Original Template</h4>
+        <div id="originalTemplateContent"></div>
+      </div>
+      <div class="compare-edited">
+        <h4>Your Edited Version</h4>
+        <div id="editedTemplateContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
